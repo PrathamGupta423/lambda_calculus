@@ -225,15 +225,24 @@ Any natural / reasonable notion of computation realizable in the physical world 
 \end{frame}
 
 
+
 % Section 4: Substitution and Alpha-Conversion
 \section{Substitution and $\alpha$-Conversion}
+
 \begin{frame}{Substitution}
-  \begin{itemize}
-    \item Replacing all free occurrences of a variable \(x\) in \(M\) by a term \(N\).
-    \item Notation: \(M[x := N]\).
-    \item Must avoid variable capture.
-  \end{itemize}
-\end{frame}
+%   \begin{itemize}
+%     \item Replacing all free occurrences of a variable \(x\) in \(M\) by a term \(N\).
+%     \item Notation: \(M[x := N]\).
+%     \item Must avoid variable capture.
+%   \end{itemize}
+% \end{frame}
+
+\begin{definition}
+  A substitution $\varphi = [x_1 := N_1, \ldots, x_n := N_n]$ is a finite set of pairs where each \(x_i\) is a variable and \(N_i\) is a $\lambda$-term.\\
+\end{definition}
+\begin{definition}
+  Given a substitution \(\varphi\) and any variable \(x_i\), \(\varphi_{-x_i}\) is a new substitution obtained by removing the pair \((x_i, N_i)\) from \(\varphi\).\\
+\end{definition}
 
 % \begin{frame}{Example of Substitution}
 %   \[
@@ -243,6 +252,63 @@ Any natural / reasonable notion of computation realizable in the physical world 
 %   \begin{itemize}
 %     \item Illustrates careful handling to avoid capture.
 %   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Substitution}
+
+  Given any $\lambda$-term \(M\) and a substitution \(\varphi\), the result of applying \(\varphi\) to \(M\) is denoted by \(M[\varphi]\) and is defined as follows:
+  \begin{enumerate}
+    \item If \(M\) is a variable \(x\), then:
+      \[
+      M[\varphi] = N_i \quad \text{if } x = x_i \text{ for some } i \text{ else } M[\varphi] = x
+      \]
+    \item If \(M\) is of the form \((M \; N)\), then:
+      \[
+      M[\varphi] = (M[\varphi] \; N[\varphi])
+      \]
+    \item If \(M\) is of the form \(\lambda y.M_1\) and \(y \neq x_i\) for all \(i\), then:
+      \[
+      M[\varphi] = \lambda y.M_1[\varphi]
+      \]
+    \item If \(M\) is of the form \(\lambda y.M_1\) and \(y = x_i\) for some \(i\), then:
+      \[
+      M[\varphi] = \lambda y.M_1[\varphi_{-y}]
+      \]
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Substitution}
+
+  A \(\lambda\)-term \(M\) is \textbf{safe} for substitution \(\varphi = [x_1 := N_1, \ldots, x_n := N_n]\) if:
+  \[
+    \text{BV}(M) \cap (\cup_{i=1}^n \text{FV}(N_i)) = \emptyset
+  \] 
+  that is free variables of \(N_i\) do not become bound in \(M\) after substitution.\\
+  \vspace{1em}
+
+  If \(M\) is a combinator, then \(M[\varphi] = M\) for any substitution \(\varphi\).\\
+
+  Some examples of substitution:
+  \begin{itemize}
+    \item \(y[x:=\lambda x.x] = y\) 
+    \item \(y[y:=\lambda x.x] = \lambda x.x\)
+  \end{itemize}
+\end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Caputuring}
+
+%   Consider:
+%   \[
+%     \lambda x. (xz)(yz)[y := (xx); z := (\lambda u. v)] = \lambda x. (x(\lambda u. v))((xx)(\lambda u. v))
+%   \]
+
+  
+
 % \end{frame}
 
 \begin{frame}{$\alpha$-Conversion}
@@ -252,6 +318,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
     \item Essential for correct substitution.
   \end{itemize}
 \end{frame}
+
 
 % Section 5: Beta-Reduction and Church–Rosser
 \section{Beta-Reduction and Church–Rosser}
