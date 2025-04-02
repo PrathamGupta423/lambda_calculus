@@ -126,12 +126,12 @@ Any natural / reasonable notion of computation realizable in the physical world 
       \item If $M$ is a $\lambda$-term and $x$ is a variable, then $\lambda x.M$ is a $\lambda$-term called a $\lambda$-abstraction
     \end{enumerate}
   \end{block}
-  \textbf{Examples:}
-  \begin{itemize}
-      \item let $M = \lambda x.x$ is a lambda abstraction 
-      \item let $N = y $
-      \item $(M N) = (\lambda x.x \; y) \rightarrow y$
-  \end{itemize}
+  % \textbf{Examples:}
+  % \begin{itemize}
+  %     \item Let \(M = \lambda x.x\), which is a lambda abstraction.
+  %     \item Let \(N = y\).
+  %     \item \((M N) = (\lambda x.x \; y) \rightarrow y\).
+  % \end{itemize}
 \end{frame}
 
 \begin{frame}{Formal Definition of $\lambda$-Terms}
@@ -140,8 +140,8 @@ Any natural / reasonable notion of computation realizable in the physical world 
       \item $x$
       \item $\lambda x.x$
       \item $xy$
-      \item x$\lambda$ y.$(x(yy))$
-      \item $\lambda\lambda x.y$ (invalid)
+      \item $x\lambda y.(x(yy))$
+      \item $\lambda x.\lambda y.(x)$ (invalid)
   \end{itemize}
   \end{block}
 \end{frame}
@@ -166,11 +166,42 @@ Any natural / reasonable notion of computation realizable in the physical world 
       \[
         (((F \; M_1)M_2)\ldots M_n) \quad\text{is written as}\quad F M_1 \ldots M_n.
       \]
+      e.g. \(wxyz\) is \(((wx)y)z\).
     \item Right-association of abstractions:
       \[
         \lambda x_1.\lambda x_2.\cdots\lambda x_n.M \quad\text{is written as}\quad \lambda x_1 \cdots x_n.M.
       \]
+      e.g. \(\lambda x.xy\) is \(\lambda x.(xy)\), and
+      \(\lambda x.\lambda x.x\) is \(\lambda x.(\lambda x.x)\).
   \end{itemize}
+\end{frame}
+\begin{frame}{Semantics}
+  \textbf{$\lambda$x.M} defines a function, where:
+  \begin{itemize}
+    \item $x$ is the formal parameter of the function.
+    \item $M$ is the body of the function.
+    \item $M \to M_1 M_2$, function application, similar to calling function $M_1$ and setting its formal parameter to $M_2$.
+  \end{itemize}
+  \vspace{1em}
+  \textbf{Example:}
+  \begin{itemize}
+    \item $\lambda x.\,+ x 1$ defines a function that adds 1 to its argument.
+    \item ($\lambda x.\,+ x 1$) 2 evaluates as $(+ 2 1)$, which is 3.
+  \end{itemize}
+  \begin{block}{}
+    Q. How can + function be defined if abstractions only accept 1 parameter?\\
+  \end{block}
+\end{frame}
+\begin{frame}{Currying}
+  Technique to translate the evaluation of a function that takes multiple arguments into a sequence of functions that take a single argument.\\
+  \vspace{1em}
+  Example:
+  \[
+  \lambda x.\lambda y.((+ x)y)
+  \]
+  \[
+  (\lambda x.\lambda y.((+ x)y))\ 10\ 20 \rightarrow (\lambda y.((+ 10)y))\ 20 \rightarrow ((+ 10)20) \rightarrow 30
+  \]
 \end{frame}
 
 
@@ -180,25 +211,35 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \begin{definition}
     For any $\lambda$-term \(M\), the \textbf{free variables} (FV) and \textbf{bound variables} (BV) are defined as follows:
     \begin{itemize}
-      \item If $M = x$ is a variable, then:
+      \item If \(M = x\) is a variable, then:
         \[
         \text{FV}(x) = \{x\}, \quad \text{BV}(x) = \emptyset
         \]
-      \item If $M = (M_1 M_2)$, then:
+      \item If \(M = (M_1 M_2)\), then:
         \[
         \text{FV}(M) = \text{FV}(M_1) \cup \text{FV}(M_2), \quad \text{BV}(M) = \text{BV}(M_1) \cup \text{BV}(M_2)
         \]
-      \item If $M = \lambda x.M_1$, then:
+      \item If \(M = \lambda x.M_1\), then:
         \[
         \text{FV}(M) = \text{FV}(M_1) \setminus \{x\}, \quad \text{BV}(M) = \text{BV}(M_1) \cup \{x\}
         \]
     \end{itemize}
   \end{definition}
 
-
-
 \end{frame}
-
+\begin{frame}{Free and Bound Variables}
+  Examples:
+  \begin{itemize}
+    \item Is \(x\) free in \(\lambda x.x\)? (No)
+    \item Is \(x\) free in \((\lambda x.xy)x\)? (Yes)\\
+    \((\lambda x.xy)x \to (xy)\)
+  \end{itemize}
+  \vspace{1em}
+  \begin{itemize}
+    \item (\(\lambda \textcircled{x}.\lambda y.\textcircled{x}y\)) (\(\lambda z.\textbf{x}z\))
+  \end{itemize}
+  
+\end{frame}
 \begin{frame}{Free and Bound Variables}
 
   \begin{definition}
@@ -228,14 +269,24 @@ Any natural / reasonable notion of computation realizable in the physical world 
 
 % Section 4: Substitution and Alpha-Conversion
 \section{Substitution and $\alpha$-Conversion}
-
-\begin{frame}{Substitution}
+% \begin{frame}{$\alpha$ Equivalence}
+%   \begin{block}{}
+%   Q. What does it mean for two functions to be equivalent?
+%   \end{block}
+%   - Is $\lambda x.\texttt{xy} \equiv \lambda y.\texttt{yx}$?
 %   \begin{itemize}
-%     \item Replacing all free occurrences of a variable \(x\) in \(M\) by a term \(N\).
-%     \item Notation: \(M[x := N]\).
-%     \item Must avoid variable capture.
+%     \item \alpha-equivalence is when two functions vary only by the names of bound variables.
+%     \item $M_1 \equiv_\alpha M_2$ if $M_1$ can be obtained from $M_2$ by renaming bound variables.
 %   \end{itemize}
 % \end{frame}
+\begin{frame}{Substitution}
+  \begin{itemize}
+    \item Replacing all free occurrences of a variable $x$ in $M$ by a term $N$.
+    \item Notation: $M[x := N]$.
+    \item Must avoid variable capture to ensure correctness.
+  \end{itemize}
+  \vspace{-1em} % Adjust spacing to avoid overfull box
+\end{frame}
 
 \begin{definition}
   A substitution $\varphi = [x_1 := N_1, \ldots, x_n := N_n]$ is a finite set of pairs where each \(x_i\) is a variable and \(N_i\) is a $\lambda$-term.\\
@@ -252,17 +303,17 @@ Any natural / reasonable notion of computation realizable in the physical world 
 %   \begin{itemize}
 %     \item Illustrates careful handling to avoid capture.
 %   \end{itemize}
-\end{frame}
+% \end{frame}
 
 \begin{frame}
   \frametitle{Substitution}
-
+  
   Given any $\lambda$-term \(M\) and a substitution \(\varphi\), the result of applying \(\varphi\) to \(M\) is denoted by \(M[\varphi]\) and is defined as follows:
   \begin{enumerate}
-    \item If \(M\) is a variable \(x\), then:
-      \[
-      M[\varphi] = N_i \quad \text{if } x = x_i \text{ for some } i \text{ else } M[\varphi] = x
-      \]
+      \item If \(M\) is a variable \(x\), then:
+        \[
+        M[\varphi] = N_i \quad \text{if } x = x_i \text{ for some } i, \text{ else } M[\varphi] = x
+        \]
     \item If \(M\) is of the form \((M \; N)\), then:
       \[
       M[\varphi] = (M[\varphi] \; N[\varphi])
