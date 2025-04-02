@@ -9,7 +9,7 @@
 
 \title{From Abstraction to Computation: \\ Understanding Lambda Calculus}
 \author{Pratham Gupta Sehaj Ganjoo\\
-        Krishna Aggarwal Gavish Bansal}
+        Krishna Agarwal Gavish Bansal}
 \institute{Indian Institute of Science, Bengaluru}
 \date{\today}
 
@@ -21,13 +21,13 @@
   \end{frame}
 }
 
-\AtBeginSubsection[]
-{
-  \begin{frame}[allowframebreaks]
-    \frametitle{Outline}
-    \tableofcontents[currentsection,currentsubsection]
-  \end{frame}
-}
+% \AtBeginSubsection[]
+% {
+%   \begin{frame}[allowframebreaks]
+%     \frametitle{Outline}
+%     \tableofcontents[currentsection,currentsubsection]
+%   \end{frame}
+% }
 
 
 \begin{document}
@@ -116,6 +116,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{itemize}
 \end{frame}
 
+\subsection{$\lambda$-Terms}
 \begin{frame}{Formal Definition of $\lambda$-Terms}
   \begin{block}{Definition}
     The set of $\lambda$-terms is defined inductively:
@@ -129,7 +130,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \begin{itemize}
       \item let $M = \lambda x.x$ is a lambda abstraction 
       \item let $N = y $
-      \item *fix this* $(M N) = (\lambda x.x \space \space  y) \rightarrow y$
+      \item $(M N) = (\lambda x.x \; y) \rightarrow y$
   \end{itemize}
 \end{frame}
 
@@ -163,7 +164,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \begin{itemize}
     \item Left-association of application:
       \[
-        (((FM_1)M_2)\ldots M_n) \quad\text{is written as}\quad F M_1 \ldots M_n.
+        (((F \; M_1)M_2)\ldots M_n) \quad\text{is written as}\quad F M_1 \ldots M_n.
       \]
     \item Right-association of abstractions:
       \[
@@ -172,37 +173,57 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{itemize}
 \end{frame}
 
-% Section 3: Free and Bound Variables
-\section{Free and Bound Variables}
+
+\subsection{Free and Bound Variables}
 \begin{frame}{Free vs. Bound Variables}
+
+  \begin{definition}
+    For any $\lambda$-term \(M\), the \textbf{free variables} (FV) and \textbf{bound variables} (BV) are defined as follows:
+    \begin{itemize}
+      \item If $M = x$ is a variable, then:
+        \[
+        \text{FV}(x) = \{x\}, \quad \text{BV}(x) = \emptyset
+        \]
+      \item If $M = (M_1 M_2)$, then:
+        \[
+        \text{FV}(M) = \text{FV}(M_1) \cup \text{FV}(M_2), \quad \text{BV}(M) = \text{BV}(M_1) \cup \text{BV}(M_2)
+        \]
+      \item If $M = \lambda x.M_1$, then:
+        \[
+        \text{FV}(M) = \text{FV}(M_1) \setminus \{x\}, \quad \text{BV}(M) = \text{BV}(M_1) \cup \{x\}
+        \]
+    \end{itemize}
+  \end{definition}
+
+
+
+\end{frame}
+
+\begin{frame}{Free and Bound Variables}
+
+  \begin{definition}
+    A $\lambda$-term M is closed or a \textbf{Combinator} if it has no free variables, i.e., $\text{FV}(M) = \emptyset$.
+  \end{definition}
+
+  Intuitively:
   \begin{itemize}
     \item \textbf{Free Variables (FV):} Occur unbound in a term.
     \item \textbf{Bound Variables (BV):} Declared within a $\lambda$-abstraction.
   \end{itemize}
   \vspace{1em}
   \[
-  \text{For } M = \lambda x. (xy), \quad \text{FV}(M)=\{y\},\quad \text{BV}(M)=\{x\}.
+  \text{For } M_1 = \lambda x. (xy), \quad \text{FV}(M_1)=\{y\},\quad \text{BV}(M_1)=\{x\}.
   \]
+  \[
+  \text{For } M_2 = \lambda x.(\lambda y. (x)), \quad \text{FV}(M_2)=\emptyset,\quad \text{BV}(M_2)=\{x,y\}.
+  \]
+  Note that:
+  \begin{itemize}
+    \item \(M_2\) has no free variables and is a combinator.
+    \item If we rename a bound variable in a term, It has no effect on the behavior of the term.
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{Definition of FV and BV}
-  \begin{block}{Inductive Definitions}
-    \begin{enumerate}
-      \item If \( M = x \), then \(\text{FV}(x)=\{x\}\) and \(\text{BV}(x)=\emptyset\).
-      \item If \( M = (M_1 M_2) \), then:
-        \[
-        \text{FV}(M)=\text{FV}(M_1)\cup \text{FV}(M_2),
-        \]
-        \[
-        \text{BV}(M)=\text{BV}(M_1)\cup \text{BV}(M_2).
-        \]
-      \item If \( M = \lambda x.M_1 \), then:
-        \[
-        \text{FV}(M)=\text{FV}(M_1)\setminus \{x\}, \quad \text{BV}(M)=\text{BV}(M_1)\cup\{x\}.
-        \]
-    \end{enumerate}
-  \end{block}
-\end{frame}
 
 % Section 4: Substitution and Alpha-Conversion
 \section{Substitution and $\alpha$-Conversion}
