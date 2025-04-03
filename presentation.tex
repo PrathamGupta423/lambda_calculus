@@ -535,6 +535,44 @@ Any natural / reasonable notion of computation realizable in the physical world 
 
 % Section 6: Useful Combinators
 \section{Some Useful Combinators}
+
+\subsection{Currying}
+\begin{frame}
+  \frametitle{Currying}
+  \begin{block}{Definition}
+    In lambda calculus, a abstraction takes only one argument.\\
+    \textbf{Currying}( named after Haskell Curry) is the process of transforming a function that takes multiple arguments into a sequence of functions, each taking a single argument.
+  \end{block}
+  Consider the function: \(f:\mathbb{N}\times\mathbb{N} \rightarrow \mathbb{N}\) \\
+  If we fix the first argument, we get a function \(F_x:\mathbb{N} \rightarrow \mathbb{N}\)\\
+  \[
+    F_x(y) = f(x,y) \forall y \in \mathbb{N}
+  \]  
+  So we can write \(F_x = \lambda y.f(x,y)\)
+  and then the function \(x \mapsto F_x\) can be written as:
+  \[
+    F = \lambda x.F_x = \lambda x.\lambda y.f(x,y)
+  \]
+  Hence we obtain 
+  \[
+    (F\;M)N \rightarrow_\beta F_M N \rightarrow_\beta f(M,N)
+  \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Currying}
+
+  Hence we have ability to transform a function that takes multiple arguments into a sequence of functions, each taking a single argument.\\
+  As a notational convention, we can write:
+  \[
+  \begin{aligned}
+      F &= \lambda x_1.\lambda x_2.\cdots\lambda x_n.f(x_1,x_2,\ldots,x_n) \\ 
+        &= \lambda x_1 x_2 \cdots x_n. f(x_1,x_2,\ldots,x_n)
+  \end{aligned}
+  \]
+\end{frame}
+
+
 \begin{frame}{Combinators I, K, and S}
   \begin{itemize}
     \item \( I = \lambda x.x \)
