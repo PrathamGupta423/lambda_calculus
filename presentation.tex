@@ -499,10 +499,38 @@ Any natural / reasonable notion of computation realizable in the physical world 
 \end{frame}
 
 \begin{frame}{Church–Rosser Theorem}
-  \begin{itemize}
-    \item Confluence: If \( M \) reduces to both \( M_1 \) and \( M_2 \), then there exists \( M_3 \) such that both \( M_1 \) and \( M_2 \) reduce to \( M_3 \).
-    \item Implies uniqueness (up to $\alpha$-conversion) of normal forms.
-  \end{itemize}
+  % \begin{itemize}
+  %   \item Confluence: If \( M \) reduces to both \( M_1 \) and \( M_2 \), then there exists \( M_3 \) such that both \( M_1 \) and \( M_2 \) reduce to \( M_3 \).
+  %   \item Implies uniqueness (up to $\alpha$-conversion) of normal forms.
+  % \end{itemize}
+
+  \begin{theorem}
+    The following properties hold for the \(\lambda\)-calculus:
+    \begin{itemize}
+      \item \textbf{Confluence:} If \( M \rightarrow^*_\beta N_1 \) and \( M \rightarrow^*_\beta N_2 \), then there exists \( N_3 \) such that \( N_1 \rightarrow^*_\beta N_3 \) and \( N_2 \rightarrow^*_\beta N_3 \).
+      
+      \item \textbf{Church-Rosser Property:}
+        for any two $\lambda$-terms \(M\) and \(N\), if \(M \xleftrightarrow{*}_\beta N\), then there exists a $\lambda$-term \(P\) such that:
+        \[
+          M \rightarrow^{*}_\beta P \quad \text{and} \quad N \rightarrow^{*}_\beta P
+        \]
+    \end{itemize}
+  \end{theorem}
+\end{frame}
+
+\begin{frame}{Church–Rosser Theorem: Visual Representation}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \begin{figure}
+      \includegraphics[width=\textwidth]{images/Church-Rosser.png}
+      \caption{Church–Rosser Property}
+    \end{figure}
+    \column{0.5\textwidth}
+    \begin{figure}
+      \includegraphics[width=\textwidth]{images/Confluence.png}
+      \caption{Confluence Property}
+    \end{figure}
+  \end{columns}
 \end{frame}
 
 % Section 6: Useful Combinators
