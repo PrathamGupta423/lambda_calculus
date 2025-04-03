@@ -804,17 +804,115 @@ Any natural / reasonable notion of computation realizable in the physical world 
 
 \begin{frame}{Arithmetic Operations}
   \begin{itemize}
-    \item \textbf{Successor:} 
-    \(\text{\textbf{Succ}}_\text{\textbf{c}} = \lambda nfx.f(nfx)\)
-    \item \textbf{IsZero:} 
-    \(\text{\textbf{IsZero}}_\text{\textbf{c}} = \lambda x. x(\mathbf{K}\mathbf{F})\mathbf{T}\)
-    \item \textbf{Addition:}
-    \(\text{\textbf{Add}} = \lambda mn.\text{\textbf{Iter }} m \text{\textbf{ Succ}}_\text{\textbf{c }}n \)
-    \item \textbf{Multiplication:}
-    \(\text{\textbf{Mult}} = \lambda mn.\text{\textbf{Iter }} m \text{\textbf{ Add}}_\text{\textbf{c }}n\)
-    \item \textbf{Exponentiation:}
-    \(\text{\textbf{Exp}} = \lambda mn.\text{\textbf{Iter }} n \text{\textbf{ Mult}}_\text{\textbf{c }}m\)
+    \item \textbf{Successor:}  
+      \[
+      \text{\textbf{Succ}}_\mathbf{c} = \lambda nfx. f(nfx)
+      \]
+      
+    \item \textbf{IsZero:}  
+      \[
+      \text{\textbf{IsZero}}_\mathbf{c} = \lambda x. x (\mathbf{K} \mathbf{F}) \mathbf{T}
+      \]
+      
+    \item \textbf{Addition:}  
+      \[
+      \text{\textbf{Add}} = \lambda mn. \text{\textbf{Iter} } m \text{ \textbf{Succ}}_\mathbf{c} \ n
+      \]
+      
+    \item \textbf{Multiplication:}  
+      \[
+      \text{\textbf{Mult}} = \lambda mn. \text{\textbf{Iter} } m \text{ \textbf{Add}}_\mathbf{c} \ n
+      \]
+      
+    \item \textbf{Exponentiation:}  
+      \[
+      \text{\textbf{Exp}} = \lambda mn. \text{\textbf{Iter} } n \text{ \textbf{Mult}}_\mathbf{c} \ m
+      \]
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Arithmetic Operations}
+
+  \begin{block}{Example: Zero Check}
+    \[
+    \text{\textbf{IsZero}}_\text{\textbf{c}} = \lambda n. n (\lambda x. \mathbf{F}) \mathbf{T}
+    \]
+    \textbf{Proof:}
+    \begin{itemize}
+      \item For \(n = \mathbf{c_0}\):
+      \[
+      \text{\textbf{IsZero}}_\text{\textbf{c}} \mathbf{c_0} = (\lambda n. n (\lambda x. \mathbf{F}) \mathbf{T}) \mathbf{c_0}
+      \]
+      Substituting \(\mathbf{c_0} = \lambda fx. x\):
+      \[
+      \rightarrow_\beta \mathbf{c_0} (\lambda x. \mathbf{F}) \mathbf{T} = (\lambda fx. x) (\lambda x. \mathbf{F}) \mathbf{T}
+      \]
+      \[
+      \rightarrow_\beta (\lambda x.x) \mathbf{T} = \mathbf{T}
+      \]
+      Hence, \(\text{\textbf{IsZero}}_\text{\textbf{c}} \mathbf{c_0} \rightarrow_\beta \mathbf{T}\).
+
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Arithmetic Operations}
+
+  \begin{block}{Evaluating \(\text{IsZero}_c \mathbf{c_1}\)}
+    \begin{itemize}
+      \item For \( n = \mathbf{c_1} \), we have:
+      \[
+      \text{IsZero}_c \mathbf{c_1} = (\lambda n. n (\lambda x. \mathbf{F}) \mathbf{T}) \mathbf{c_1}
+      \]
+      \item Substituting \( \mathbf{c_1} = \lambda fx. f x \):
+      \[
+      \rightarrow_\beta \mathbf{c_1} (\lambda x. \mathbf{F}) \mathbf{T}
+      \]
+      \[
+      = (\lambda fx. f x) (\lambda x. \mathbf{F}) \mathbf{T}
+      \]
+      \item Beta reduction:
+      \[
+      \rightarrow_\beta (\lambda x. \mathbf{F}) \mathbf{T}
+      \]
+      \[
+      \rightarrow_\beta \mathbf{F}
+      \]
+      \item Hence, we conclude:
+      \[
+      \text{IsZero}_c \mathbf{c_1} \rightarrow_\beta \mathbf{F}
+      \]
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Arithmetic Operations}
+  \begin{block}{Example: Successor}
+    \[
+    \text{\textbf{Succ}}_\mathbf{c} = \lambda nfx. f(nfx)
+    \]
+    \textbf{Proof:}
+    \begin{itemize}
+      \item For \(n = \mathbf{c_k}\):
+      \[
+      \text{\textbf{Succ}}_\mathbf{c} \mathbf{c_k} = (\lambda nfx. f(nfx)) \mathbf{c_k}
+      \]
+      Substituting \(n = \mathbf{c_k} = \lambda fx. f^k(x)\):
+      \[
+      \rightarrow_\beta^* (\lambda fx. f(\mathbf{c_k}fx)) = (\lambda fx. f(\lambda fx.f^k(x))fx)
+      \]
+      \[
+      \rightarrow_\beta^* (\lambda fx. f(f^k(x))) = (\lambda fx.f^{k+1}(x)) = \mathbf{c_{k+1}}
+      \]
+    \end{itemize}
+    
+  \end{block}
+
+  
+
 \end{frame}
 
 \begin{frame}{The Predecessor Function}
@@ -882,16 +980,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
       \]
   \end{itemize}
 \end{frame}
-\begin{frame}{Barendregt Numerals}
-  \begin{itemize}
-    
-    \item Alternative representation: 
-      \[
-      b_0 = I,\quad b_{n+1} = \langle F, b_n \rangle
-      \]
-    \item Simpler for certain arithmetic operations.
-  \end{itemize}
-\end{frame}
+
 
 % Section 8: Fixed-Point Combinators and Recursion
 \section{Fixed-Point Combinators and Recursion}
