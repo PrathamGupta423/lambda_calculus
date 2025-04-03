@@ -723,19 +723,38 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Iteration with Church Numerals}
-  \[
-    \text{Iter} = \lambda nfx. n f x
-  \]
+\begin{frame}{Iteration}
+
+  \begin{definition}
+    The \textbf{Iteration} combinator \textbf{Iter} is defined as:
+    \[
+      \text{Iter} = \lambda n f x. n f x
+    \]
+  \end{definition}
+  Notice that:
   \begin{itemize}
-    \item Iterates the function \(f\) \(n\) times on \(x\).
+    \item Iter combinator is same as the if then else combinator. This means that if we pass a boolean to the Iter combinator then it will behave like the if then else combinator.
+    \item \(\text{\textbf{Iter }} \mathbf{c_n} f x = \lambda fx. f^n x\) \\
+    proof:
+    \[
+      \text{\textbf{Iter} } \mathbf{c_n} f x \rightarrow \mathbf{c_n} f x = (\lambda fx.f^n x)fx = f^n x
+    \]
+
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Arithmetic Operations}
   \begin{itemize}
-    \item \textbf{Addition:} \( \text{Add} = \lambda m n f x. m f (n f x) \)
-    \item \textbf{Multiplication:} \( \text{Mult} = \lambda m n. m n \)
+    \item \textbf{Successor:} 
+    \(\text{\textbf{Succ}}_\text{\textbf{c}} = \lambda nfx.f(nfx)\)
+    \item \textbf{IsZero:} 
+    \(\text{\textbf{IsZero}}_\text{\textbf{c}} = \lambda x. x(\mathbf{K}\mathbf{F})\mathbf{T}\)
+    \item \textbf{Addition:}
+    \(\text{\textbf{Add}} = \lambda mn.\text{\textbf{Iter }} m \text{\textbf{ Succ}}_\text{\textbf{c }}n \)
+    \item \textbf{Multiplication:}
+    \(\text{\textbf{Mult}} = \lambda mn.\text{\textbf{Iter }} m \text{\textbf{ Add}}_\text{\textbf{c }}n\)
+    \item \textbf{Exponentiation:}
+    \(\text{\textbf{Exp}} = \lambda mn.\text{\textbf{Iter }} n \text{\textbf{ Mult}}_\text{\textbf{c }}m\)
   \end{itemize}
 \end{frame}
 
