@@ -327,12 +327,19 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{itemize}
 \end{frame}
 
-\begin{definition}
-  A substitution $\varphi = [x_1 := N_1, \ldots, x_n := N_n]$ is a finite set of pairs where each \(x_i\) is a variable and \(N_i\) is a $\lambda$-term.\\
-\end{definition}
-\begin{definition}
-  Given a substitution \(\varphi\) and any variable \(x_i\), \(\varphi_{-x_i}\) is a new substitution obtained by removing the pair \((x_i, N_i)\) from \(\varphi\).\\
-\end{definition}
+\begin{frame}
+  \frametitle{Substitution}
+
+  \begin{definition}
+    A substitution $\varphi = [x_1 := N_1, \ldots, x_n := N_n]$ is a finite set of pairs where each \(x_i\) is a variable and \(N_i\) is a $\lambda$-term.\\
+  \end{definition}
+  \begin{definition}
+    Given a substitution \(\varphi\) and any variable \(x_i\), \(\varphi_{-x_i}\) is a new substitution obtained by removing the pair \((x_i, N_i)\) from \(\varphi\).\\
+  \end{definition}
+
+\end{frame}
+
+
 
 
 % \begin{frame}{Example of Substitution}
@@ -1258,6 +1265,84 @@ Any natural / reasonable notion of computation realizable in the physical world 
     \item This establishes the equivalence between the lambda-calculus and Turing machines.
   \end{itemize}
 \end{frame}
+
+\begin{frame}{Theorem 3.11 (Kleene, 1936)}
+  \textbf{Statement:} If a (total) function $f: \mathbb{N}^n \to \mathbb{N}$ is computable, then it is $\lambda$-definable.
+  
+  If a (partial) function $f: \mathbb{N}^n \to \mathbb{N}$ is partial computable, then it is $\lambda$-definable.
+\end{frame}
+
+\begin{frame}{Proof Outline}
+  \textbf{Step 1: Base Case}
+  \begin{itemize}
+      \item The base functions are $\lambda$-definable.
+      \item $\mathbf{Z_c}$ computes $Z$, and $\mathbf{Succ_c}$ computes $S$.
+      \item The function $U_i^n$ given by $U_i^n = \lambda x_1 \dots x_n. x_i$ computes $P_i^n$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Step 2: Closure under Composition}
+  If $g$ is $\lambda$-defined by $G$ and $h_1, \dots, h_m$ are $\lambda$-defined by $H_1, \dots, H_m$, then $g \circ (h_1, \dots, h_m)$ is $\lambda$-defined by:
+  \[
+  F = \lambda x_1 \dots x_n. G(H_1 x_1 \dots x_n) \dots (H_m x_1 \dots x_n)
+  \]
+\end{frame}
+
+\begin{frame}{Step 3: Closure under Primitive Recursion}
+  \begin{itemize}
+      \item If $f$ is defined by primitive recursion from $g$ and $h$, and $G$ and $H$ $\lambda$-define them, then:
+      \[
+      F = \lambda n x_1 \dots x_m. \pi_1 (\text{Iter} n \lambda z. \langle H \pi_1 z \pi_2 z x_1 \dots x_m, \mathbf{Succ_c}(\pi_2 z) \rangle \langle G x_1 \dots x_m, c_0 \rangle)
+      \]
+      \item This ensures $F$ $\lambda$-defines $f$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Step 4: Closure under Minimization}
+  Suppose $f$ is total and defined by minimization from $g$, where $g$ is $\lambda$-defined by $G$. Define:
+  \[
+  J = \lambda f x_1 \dots x_m. \text{if } \text{IsZero}_c G x_1 \dots x_m \text{ then } x \text{ else } f(\mathbf{Succ_c} x) x_1 \dots x_m
+  \]
+  \[
+  F = \Theta J
+  \]
+  \begin{itemize}
+      \item This ensures that $F$ $\lambda$-defines $f$.
+      \item Since $f$ is total, some least $n$ will be found.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Partial Computable Functions}
+  To prove the result for partial computable functions, we use the Kleene normal form:
+  \[
+  f = g \circ \mu h
+  \]
+  where $g$ and $h$ are primitive recursive.
+  \begin{itemize}
+      \item Our previous proof ensures $g$ and $h$ are $\lambda$-definable.
+      \item Minimization may fail, but since $g$ is total, it remains well-defined.
+      \item A rigorous proof is available in Hindley and Seldin (Chapter 4, Theorem 4.18).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusion}
+  \begin{itemize}
+      \item Combining Theorems 3.10 and 3.11, the set of $\lambda$-definable total functions equals the set of total computable functions.
+      \item Similarly, for partial functions.
+      \item Thus, the $\lambda$-calculus has universal computing power.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Remark}
+  \begin{itemize}
+      \item Lists can be represented in $\lambda$-calculus, allowing Turing machine simulation.
+      \item $\lambda$-calculus has the same power as Turing machines.
+      \item This leads to undecidability results similar to the halting problem and Rice’s theorem.
+  \end{itemize}
+  \textbf{Scott-Curry Theorem:} An analog of Rice’s theorem follows as a corollary.
+\end{frame}
+
+
 
 \begin{frame}{Proof Sketch (1): Base Functions and Composition}
   \begin{itemize}
