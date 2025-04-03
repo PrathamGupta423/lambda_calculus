@@ -572,25 +572,45 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \]
 \end{frame}
 
-
+\subsection{Bools, Conditional and Pairs}
 \begin{frame}{Combinators I, K, and S}
+  Let us define the following combinators:
   \begin{itemize}
-    \item \( I = \lambda x.x \)
-    \item \( K = \lambda xy.x \)
-    \item \( S = \lambda xyz. (xz)(yz) \)
+    \item \( \mathbf{I} = \lambda x.x \) (identity function)
+    \item \(\mathbf{T} = \textbf{K} = \lambda xy.x \) (True)
+
+    \item \( \mathbf{F} =\mathbf{K}_* = \lambda xy.y \) (False)
+    \item \( \mathbf{S} = \lambda xyz. xz(yz) \) 
   \end{itemize}
-  \vspace{1em}
-  \[
-    SKK \rightarrow_\beta I
-  \]
+  We can see some interesting properties of these combinators:
+  \begin{itemize}
+    \item \(\mathbf{I}M \rightarrow_\beta M\)
+    \item \(\mathbf{K}MN \rightarrow_\beta M\)
+    \item \(\mathbf{K}_*MN \rightarrow_\beta N\)
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{Additional Combinators}
+\begin{frame}{Conditional}
+  Let us define the conditional operator:
+  \[
+    \text{if then else} = \lambda bxy. bxy
+  \]
+  then for all \(\lambda-terms\) we have:
   \begin{itemize}
-    \item \( K^* = \lambda xy.y \)
-    \item Booleans: \(T = K\) and \(F = K^*\)
-    \item Conditional: \(\text{if} = \lambda bxy. bxy\)
+    \item \(\text{if}\ \mathbf{T}\ M\ N \rightarrow_\beta M\)
+    \item \(\text{if}\ \mathbf{F}\ M\ N \rightarrow_\beta N\)
   \end{itemize}
+  Example:
+  \[
+  \begin{aligned}
+      \text{if } \mathbf{T} \text{ then } P \text{ else } Q &= (\text{if then else}) \mathbf{T} P Q \\
+      &= (\lambda bxy. bxy) \mathbf{T} P Q \\
+      &\rightarrow_{\beta} ((\lambda xy. bxy)[b := \mathbf{T}]) P Q = (\lambda xy. \mathbf{T}xy) P Q \\
+      &\rightarrow_{\beta} ((\lambda y. \mathbf{T}xy)[x := P]) Q = (\lambda y. \mathbf{T}Py) Q \\
+      &\rightarrow_{\beta} (\mathbf{T}Py)[y := Q] = \mathbf{T} P Q \\
+      &= \mathbf{K} P Q \xrightarrow{+}_{\beta} P,
+  \end{aligned}
+  \]
 \end{frame}
 
 \begin{frame}{Pairs and Projections}
