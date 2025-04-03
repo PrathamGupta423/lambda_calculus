@@ -780,17 +780,73 @@ Any natural / reasonable notion of computation realizable in the physical world 
 \end{frame}
 
 \begin{frame}{The Predecessor Function}
+  \begin{align*}
+    \text{Pred}(0) &= 0, \\
+    \text{Pred}(n + 1) &= n.
+  \end{align*}
   \begin{itemize}
     \item More challenging to define.
-    \item Kleene’s solution uses pairs:
+    \item Kleene\'s solution in his famous 1936 paper, uses pairs:
+    \[
+      \text{Pred}_K = \lambda n. \pi_2 (\text{Iter} \ n \ \lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle \ \langle c_0, c_0 \rangle).
+    \]
+  \end{itemize}
+\end{frame}
+\begin{frame}{The Predecessor Function}
+  \textbf{Why Kleene's Predecessor Function Works?}\\
+  We have:
+  \begin{align*}
+    (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^0 \langle c_0, c_0 \rangle &\xrightarrow{\beta} \langle c_0, c_0 \rangle.
+  \end{align*}
+\begin{block}{We claim that:}
+  \begin{align*}
+    (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^{n+1} \langle c_0, c_0 \rangle &\xrightarrow{\beta} \langle c_{n+1}, c_n \rangle.
+  \end{align*}
+\end{block}
+\end{frame}
+\begin{frame}{The Predecessor Function}
+    \begin{align*}Claim:
+      (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^{n+1} \langle c_0, c_0 \rangle &\xrightarrow{\beta} \langle c_{n+1}, c_n \rangle.
+    \end{align*}
+  Proof by Induction on n:\\
+  \textbf{Base Case:} \(n = 0\)\\
+  \begin{align*}
+    (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle) \langle c_0, c_0 \rangle &\xrightarrow{\beta} \langle \text{Succ}(\pi_1 \langle c_0, c_0 \rangle), \pi_1 \langle c_0, c_0 \rangle \rangle \\
+    &\xrightarrow{\beta} \langle \text{Succ}(c_0), c_0 \rangle \\
+    &\xrightarrow{\beta} \langle c_1, c_0 \rangle.
+  \end{align*}
+\end{frame}
+
+\begin{frame}{The Predecessor Function}
+  \begin{align*}Claim:
+    (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^{n+1} \langle c_0, c_0 \rangle &\xrightarrow{\beta} \langle c_{n+1}, c_n \rangle.
+  \end{align*}
+  \textbf{Inductive Step:} Assume true for \(n\), show for \(n+1\)\\
+  \[
+  \begin{aligned}
+    &(\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^{n+2} \langle c_0, c_0 \rangle \\
+    &= (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)((\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^{n+1} \langle c_0, c_0 \rangle) \\
+    &\xrightarrow{\beta} (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle) \langle c_{n+1}, c_n \rangle \\
+    &\xrightarrow{\beta} \langle c_{n+2}, c_{n+1} \rangle.
+  \end{aligned}
+  \]
+\end{frame}
+\begin{frame}{Predecessor Functions}
+  \begin{itemize}
+    \item \textbf{Kleene's predecessor function:}
       \[
-      \text{Pred} = \lambda n. \pi_2 \Bigl( \text{Iter}\ n\ \bigl(\lambda z. \langle \text{Succ}(\pi_1 z),\pi_1 z \rangle\bigr)\ \langle c_0, c_0 \rangle \Bigr)
+      \text{Pred}_K = \lambda n. \pi_2 (\text{Iter} \ n \ \lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle \ \langle c_0, c_0 \rangle).
+      \]
+  
+    \item \textbf{Alternative definition of predecessor:}
+      \[
+      \text{Pred}_c = \lambda x y z.\ x(\lambda p q.\ q(p y)) (K z) I.
       \]
   \end{itemize}
 \end{frame}
-
 \begin{frame}{Barendregt Numerals}
   \begin{itemize}
+    
     \item Alternative representation: 
       \[
       b_0 = I,\quad b_{n+1} = \langle F, b_n \rangle
