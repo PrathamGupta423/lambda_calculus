@@ -273,39 +273,60 @@ Any natural / reasonable notion of computation realizable in the physical world 
 % Section 4: Substitution and Alpha-Conversion
 \section{Substitution and $\alpha$-Conversion}
 % \begin{frame}{$\alpha$ Equivalence}
-%   \begin{block}{}
+%   \begin{block}{\strut}
 %   Q. What does it mean for two functions to be equivalent?
 %   \end{block}
-%   - Is $\lambda x.\texttt{xy} \equiv \lambda y.\texttt{yx}$?
+%   - Is $\lambda x.\mathtt{xy} \equiv \lambda y.\mathtt{yx}$?
 %   \begin{itemize}
-%     \item \alpha-equivalence is when two functions vary only by the names of bound variables.
-%     \item $M_1 \equiv_\alpha M_2$ if $M_1$ can be obtained from $M_2$ by renaming bound variables.
+%     \item $\alpha$-equivalence is when two functions vary only by the names of bound variables.
+%     \item $M_1 \equiv_{\alpha} M_2$ if $M_1$ can be obtained from $M_2$ by renaming bound variables.
 %   \end{itemize}
 % \end{frame}
-\begin{frame}{Substitution}
-  \begin{itemize}
-    \item Replacing all free occurrences of a variable $x$ in $M$ by a term $N$.
-    \item Notation: $M[x := N]$.
-    \item Must avoid variable capture to ensure correctness.
-  \end{itemize}
-  \vspace{-1em} % Adjust spacing to avoid overfull box
-\end{frame}
+% \begin{frame}{Renaming ($\alpha$ conversion)}
+%   $M\{y/x\}$: Rename bound variable $x$ to $y$ in $M$.\\
+%   \vspace{1em}
+%   \begin{itemize}
+%     \item $x\{y/x\} = y$ and $z\{y/x\} = z$ if $z \neq x$.
+%     \item $(M_1 M_2)\{y/x\} = (M_1\{y/x\})(M_2\{y/x\})$
+%     \item $(\lambda x.M)\{y/x\} = (\lambda y.M\{y/x\})$
+%     \item $(\lambda z.M)\{y/x\} = (\lambda z.M\{y/x\})$ if $x \neq z$.
+%   \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}{$\alpha$-Equivalence}
+%   Example:\\
+%   \[
+%   (\lambda x. x \lambda y. xyz) \{w/x\} \longrightarrow
+%   (\lambda x. x) \{w/x\} (\lambda y. xyz) \{w/y\} \longrightarrow
+%   (\lambda y. y) (\lambda y. wyz)
+%   \]
+%   \begin{itemize}
+%     \item Renaming bound variables to avoid clashes.
+%     \item \(\lambda x.M \equiv_\alpha \lambda y.M\{y/x\}\) provided \(y \notin FV(M)\).
+%     \item Essential for correct substitution.
+%   \end{itemize}
+% \end{frame}
 
 \begin{frame}{Substitution}
-  \begin{block}{Example}
-    $(\lambda x.yx)[y \to \lambda z.xz]$
+  Our goal: Reduce expressions by replacing variables with terms.\\
+  e.g ($\lambda x.x$) 2 $\to$ 2\\
+  \vspace{1em}
+  \begin{block}{}
+  Solution : Substitution Operation
   \end{block}
   \begin{itemize}
-    \item Result ? : $(\lambda x.(\lambda z.\textcircled{x}z)x)$
-    \item $x \in FV(\lambda z.xz)$
-    \item $x \in BV(\lambda \textcircled{x}.(\lambda z.\textcircled{x}z)x)$
+    \item Notation: $M[x \to N]$.
+    \item Replacing all free occurrences of a variable $x$ in $M$ by a term $N$.
   \end{itemize}
-  This is called Variable Capture.\\
-  \begin{block}{}
-    \textbf{Solution:} Use $\alpha$-conversion to rename bound variables before substitution.
-  \end{block}
-  \vspace{1em}
+ % Adjust spacing to avoid overfull box
+  Example:
+  \begin{itemize}
+    \item  $(+x1)[x\to 2]$ = (+2 1)
+    \item $(\lambda x.(+x1))[x\to 2]$ = $(\lambda x.(+x1))$ (no free $x$)\\
+  \end{itemize}
 \end{frame}
+
 \begin{definition}
   A substitution $\varphi = [x_1 := N_1, \ldots, x_n := N_n]$ is a finite set of pairs where each \(x_i\) is a variable and \(N_i\) is a $\lambda$-term.\\
 \end{definition}
@@ -324,8 +345,8 @@ Any natural / reasonable notion of computation realizable in the physical world 
 %   \end{itemize}
 % \end{frame}
 
-\begin{frame}
-  \frametitle{Substitution}
+\begin{frame}{Substitution}
+  \frametitle{Substitution Rules}
   
   Given any $\lambda$-term \(M\) and a substitution \(\varphi\), the result of applying \(\varphi\) to \(M\) is denoted by \(M[\varphi]\) and is defined as follows:
   \begin{enumerate}
@@ -384,14 +405,106 @@ Any natural / reasonable notion of computation realizable in the physical world 
 
 % \end{frame}
 
-\begin{frame}{$\alpha$-Conversion}
+
+\begin{frame}{Substitution}
+  \begin{block}{Example}
+    $(\lambda x.yx)[y \to \lambda z.xz]$
+  \end{block}
   \begin{itemize}
-    \item Renaming bound variables to avoid clashes.
-    \item \(\lambda x.M \equiv \lambda y.M[x:=y]\) provided \(y \notin FV(M)\).
-    \item Essential for correct substitution.
+    \item Result ? : $(\lambda x.(\lambda z.\textcircled{x}z)x)$
+    \item $x \in FV(\lambda z.xz)$
+    \item $x \in BV(\lambda \textcircled{x}.(\lambda z.\textcircled{x}z)x)$
+  \end{itemize}
+  This is called Variable Capture.\\
+  \begin{block}{}
+    \textbf{Solution:} Use $\alpha$-conversion to rename bound variables before substitution.
+  \end{block}
+  \vspace{1em}
+\end{frame}
+
+% \subsection{$\alpha$-Conversion}
+\begin{frame}{Capturing}
+  Capturing occurs when a free variable unintentionally becomes bound due to renaming or substitution, altering the meaning of an expression.
+  
+  \vspace{0.5cm}
+  \textbf{Example:}
+  \begin{align*}
+      & (\lambda x. \lambda y. x) (y) \quad \text{(Original Expression)} \\
+      & \text{If we substitute } y \text{ for } x:\\
+      & \lambda y. y \quad \text{(Captured! Incorrect meaning)}
+  \end{align*}
+
+  \vspace{0.5cm}
+  \textbf{Problem:} The free variable \texttt{y} got bound accidentally, changing the function's behavior.
+\end{frame}
+
+% Slide 2: Alpha-Conversion
+\begin{frame}{$\alpha$-Conversion}
+  \textbf{Solution:} Rename bound variables before substitution to avoid conflicts.
+  
+  \vspace{0.5cm}
+  \textbf{Example:}
+  \begin{align*}
+      & (\lambda x. \lambda y. x) (y) \\
+      & \text{Rename } y \text{ to } z \text{ in the inner function:}\\
+      & (\lambda x. \lambda z. x) (y) \\
+      & \text{Now, substitute } y \text{ for } x:\\
+      & \lambda z. y \quad \text{(Correct! Meaning is preserved)}
+  \end{align*}
+
+  \vspace{0.5cm}
+  \textbf{Conclusion:} Alpha-conversion ensures correct variable scoping by avoiding unintended captures.
+\end{frame}
+
+% Slide 1: Definition of Alpha-Conversion
+\begin{frame}{Definition of $\alpha$-Conversion}
+  \textbf{Immediate Alpha-Conversion} ($\rightarrow_{\alpha}$) allows renaming bound variables in lambda terms while preserving meaning.
+  
+  \vspace{0.5cm}
+  \textbf{Rules:}
+  \begin{itemize}
+      \item $\lambda x. M \rightarrow_{\alpha} \lambda y. M[x := y]$, if $y \notin FV(M) \cup BV(M)$.
+      \item If $M \rightarrow_{\alpha} N$, then $MQ \rightarrow_{\alpha} NQ$ and $PM \rightarrow_{\alpha} PN$.
+      \item If $M \rightarrow_{\alpha} N$, then $\lambda x. M \rightarrow_{\alpha} \lambda x. N$.
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  \textbf{Alpha-Equivalence:} The reflexive, transitive closure of $\rightarrow_{\alpha}$ is denoted as $\equiv_{\alpha}$, meaning two terms are identical up to renaming.
+\end{frame}
+
+% Slide 2: Example of Alpha-Conversion
+\begin{frame}{Example: $\alpha$-Conversion}
+  \textbf{Stepwise Renaming:}
+  \begin{align*}
+      \lambda fx. f(f(x)) &\rightarrow_{\alpha} \lambda f. \lambda y. f(f(y)) \\
+      &\rightarrow_{\alpha} \lambda g. \lambda y. g(g(y)) \\
+      &= \lambda gy. g(g(y)).
+  \end{align*}
+  
+  \textbf{Explanation:}
+  \begin{itemize}
+      \item $x$ is renamed to $y$.
+      \item $f$ is renamed to $g$.
+      \item Meaning is preserved, avoiding variable capture.
   \end{itemize}
 \end{frame}
 
+% % Slide 3: Need for Alpha-Conversion Before Substitution
+% \begin{frame}{Why Alpha-Conversion Before Substitution?}
+%   \textbf{Problem:} Direct substitution can lead to variable capture.
+  
+%   \vspace{0.5cm}
+%   \textbf{Solution:} Rename bound variables in $M$ to avoid conflicts with free variables in $N$.
+  
+%   \vspace{0.5cm}
+%   \textbf{Example:}
+%   \begin{align*}
+%       (\lambda yz. (xy)z)[x := yz] &\equiv_{\alpha} (\lambda uv. (xu)v)[x := yz] \\
+%       &= \lambda uv. ((yz)u)v.
+%   \end{align*}
+  
+%   \textbf{Conclusion:} We must rename bound variables first before substitution to ensure correctness.
+% \end{frame}
 
 % Section 5: Beta-Reduction and Church–Rosser
 \section{Beta-Reduction and Church–Rosser}
@@ -529,18 +642,23 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \]
 \end{frame}
 
-
-\begin{frame}{Combinators I, K, and S}
-  \begin{itemize}
-    \item \( I = \lambda x.x \)
-    \item \( K = \lambda xy.x \)
-    \item \( S = \lambda xyz. (xz)(yz) \)
-  \end{itemize}
-  \vspace{1em}
-  \[
-    SKK \rightarrow_\beta I
-  \]
+\begin{frame}{Combinators I, K, and \( K_* \)}
+  \begin{block}{Proposition:}
+    Let \( I \), \( K \), and \( K_* \) be defined as:
+    \begin{itemize}
+      \item \( I = \lambda x.x \)
+      \item \( K = \lambda xy.x \)
+      \item \( K_* = \lambda xy.y \)
+    \end{itemize}
+    Then, for all \(\lambda\)-terms \(M\) and \(N\), we have:
+    \begin{itemize}
+      \item \( I M \rightarrow_{\beta} M \)
+      \item \( K M N \rightarrow_{\beta} M \)
+      \item \( K_* M N \rightarrow_{\beta} N \)
+    \end{itemize}
+  \end{block}
 \end{frame}
+
 
 \begin{frame}{Additional Combinators}
   \begin{itemize}
