@@ -47,6 +47,27 @@
 % Section 1: Introduction and Motivation
 \section{Introduction and Motivation}
 
+\frame{\frametitle{The Origin}
+\begin{itemize}
+    \item Invented by Alonzo Church in the early 1930s.
+    \item Original goal: a type-free foundation for mathematics.
+    \item Alternative to set theory.
+    \item Based on higher-order logic and the notion of function.
+    \item The attempt failed due to a form of Russell's paradox.
+\end{itemize}
+}
+
+\frame{\frametitle{Lambda-Calculus as Computation Model}
+\begin{itemize}
+    \item The failure led to viewing it as a formalism for defining computability.
+    \item One of the first computation models.
+    \item Precedes the Turing machine.
+    \item Kleene proved computable functions are definable in Lambda-Calculus (1936).
+    \item Turing proved Turing machines compute the same class (1937).
+    \item Lambda-Calculus and Turing machines have the same computing power.
+\end{itemize}
+}
+
 \begin{frame}{Historical Background}
 \textbf{Leibniz’s Ideal:}
 \begin{itemize}
@@ -545,7 +566,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \begin{block}{example}
     Let \(\omega = \lambda x.(xx)\) then
     \[
-      \Omega = \omega \omega = (\lambda x.(xx))(\lambda x.(xx)) \rightarrow_\beta (\lambda x.(xx))[x := \lambda x.(xx)] = \omega\omega =\Omega
+      \Omega = \omega \omega = (\lambda x.(xx))(\lambda x.(xx)) \rightarrow_\beta (xx)[x := \lambda x.(xx)] = \omega\omega =\Omega
     \]
     This example shows that \(\beta\)-reduction may be infinite. This is what gives lambda calculus its power.
   \end{block}
