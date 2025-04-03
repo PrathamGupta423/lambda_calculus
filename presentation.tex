@@ -475,11 +475,11 @@ Any natural / reasonable notion of computation realizable in the physical world 
 % Slide 2: Example of Alpha-Conversion
 \begin{frame}{Example: $\alpha$-Conversion}
   \textbf{Stepwise Renaming:}
-  \begin{align*}
-      \lambda fx. f(f(x)) &\rightarrow_{\alpha} \lambda f. \lambda y. f(f(y)) \\
-      &\rightarrow_{\alpha} \lambda g. \lambda y. g(g(y)) \\
-      &= \lambda gy. g(g(y)).
-  \end{align*}
+  \[
+      \lambda fx. f(f(x)) \rightarrow_{\alpha} \lambda f. \lambda y. f(f(y)) 
+      \rightarrow_{\alpha} \lambda g. \lambda y. g(g(y)) 
+      = \lambda gy. g(g(y)).
+  \]
   
   \textbf{Explanation:}
   \begin{itemize}
@@ -684,14 +684,71 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \]
 \end{frame}
 
-\begin{frame}{Pairs and Projections}
-  \begin{itemize}
-    \item Pair: \(\langle M, N \rangle = \lambda z. zMN\)
-    \item First projection: \(\pi_1 = \lambda z. zK\)
-    \item Second projection: \(\pi_2 = \lambda z. zK^*\)
-  \end{itemize}
+\begin{frame}{Constructing Ordered Pairs}
+  For any two \( \lambda \)-terms \( M \) and \( N \), consider the combinators \( \pi_1 \) and \( \pi_2 \) defined as:
+  \begin{align*}
+    \langle M, N \rangle &= \lambda z.\, z\, M\, N \\
+    &= \lambda z.\, \text{if } z \text{ then } M \text{ else } N \\
+    \pi_1 &= \lambda z.\, zK \\
+    \pi_2 &= \lambda z.\, zK_*
+  \end{align*}
+  Then, we have the following \(\beta\)-reductions:
+  \begin{align*}
+    \pi_1 \langle M, N \rangle &\xrightarrow{\beta} M \\
+    \pi_2 \langle M, N \rangle &\xrightarrow{\beta} N \\
+    \langle M, N \rangle T &\xrightarrow{\beta} M \\
+    \langle M, N \rangle F &\xrightarrow{\beta} N
+  \end{align*}
 \end{frame}
-
+\begin{frame}{Proof}
+  \begin{block}{Beta Reduction of \(\pi_1 \langle M, N \rangle\)}
+    \[
+      \pi_1 \langle M, N \rangle \xrightarrow{\beta} M
+    \]
+  \end{block}
+  Proof:  
+  We have:
+  \begin{align*}
+    \pi_1 \langle M, N \rangle &= (\lambda z.\, zK)(\lambda z.\, z M N) \\
+    &\xrightarrow{\beta} (zK)[z := \lambda z.\, z M N] \\
+    &= (\lambda z.\, z M N)K \\
+    &\xrightarrow{\beta} (z M N)[z := K] \\
+    &= K M N \xrightarrow{\beta} M
+  \end{align*}
+\end{frame}
+\begin{frame}{Proof}
+  \begin{block}{Beta Reduction of \(\pi_2 \langle M, N \rangle\)}
+    \[
+      \pi_2 \langle M, N \rangle \xrightarrow{\beta} N
+    \]
+  \end{block}
+  Proof:  
+  We have:
+  \begin{align*}
+    \pi_2 \langle M, N \rangle &= (\lambda z.\, zK_*)(\lambda z.\, z M N) \\
+    &\xrightarrow{\beta} (zK_*)[z := \lambda z.\, z M N] \\
+    &= (\lambda z.\, z M N)K_* \\
+    &\xrightarrow{\beta} (z M N)[z := K_*] \\
+    &= K_* M N \xrightarrow{\beta} N
+  \end{align*}
+\end{frame}
+\begin{frame}{Proof}
+  \begin{block}{Beta Reductions of Ordered Pair Application}
+    \[
+      \langle M, N \rangle T \xrightarrow{\beta} M, \quad \langle M, N \rangle F \xrightarrow{\beta} N
+    \]
+  \end{block}
+  Proof:  
+  We have:
+  \begin{align*}
+    \langle M, N \rangle T &= (\lambda z.\, z M N) T \\
+    &\xrightarrow{\beta} T M N \\
+    &\xrightarrow{\beta} M, \quad \text{(since } T = K \text{)} \\[10pt]
+    \langle M, N \rangle F &= (\lambda z.\, z M N) F \\
+    &\xrightarrow{\beta} F M N \\
+    &\xrightarrow{\beta} N, \quad \text{(since } F = K_* \text{)}
+  \end{align*}
+\end{frame}
 % Section 7: Representing Natural Numbers
 \section{Representing Natural Numbers}
 \begin{frame}{Church Numerals}
@@ -788,10 +845,11 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \begin{itemize}
     \item Define:
       \[
-      F = \lambda g n.\, \text{if}\ (\text{IsZero}\ n)\ \text{then}\ c_1\ \text{else}\ \text{Mult}\ n\ (g\ (\text{Pred}\ n))
+      F = \lambda g\ n.\, \text{if}\ (\text{IsZero}\ n)\ \text{then}\ c_1\ \text{else}\ \text{Mult}\ n\ \bigl(g\ (\text{Pred}\ n)\bigr)
       \]
     \item Then \(G = \Theta F\) represents the factorial function.
   \end{itemize}
+  \vspace{-0.5em} % Adjust spacing to avoid overfull box
 \end{frame}
 
 % Section 9: Lambda-Definability of Computable Functions
