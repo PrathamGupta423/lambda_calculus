@@ -1061,20 +1061,194 @@ Any natural / reasonable notion of computation realizable in the physical world 
 
 % Section 9: Lambda-Definability of Computable Functions
 \section{Lambda-Definability of Computable Functions}
+
+\subsection{Computable Functions}
 \begin{frame}{Computable Functions}
+  First we need to define what we mean by computable functions.\\
+  We will use definition given by (a la Herbrand-Kleene-Gödel) of recursive functions.
+
   \begin{itemize}
-    \item A function \(f : \mathbb{N}^n \rightarrow \mathbb{N}\) is computable if it can be built from base functions by composition, primitive recursion, and minimization.
+    \item \textbf{Base Functions:} Zero, successor, and projection functions.
+    \item \textbf{Closure under Composition:} If \(f\) and \(g\) are computable, then \(h(x_1,\dots,x_n) = f(g(x_1,\dots,x_n),\dots)\) is computable.
+    \item \textbf{Primitive Recursion:} If \(f\) is computable, then the function defined by:
+      \[
+      h(0,x_1,\dots,x_n) = f(x_1,\dots,x_n)
+      \]
+      \[
+      h(n+1,x_1,\dots,x_n) = g(n,h(n,x_1,\dots,x_n))
+      \]
+      is also computable.
+    \item \textbf{Minimization:} If \(f\) is computable, then the function defined by:
+      \[
+      h(x_1,\dots,x_n) = \min\{n : f(n,x_1,\dots,x_n) = 0\}
+      \]
+      is also computable.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Lambda-Definability}
+\begin{frame}
+  \frametitle{Base Functions}
+  \begin{block}{Base Functions}
+    Base functions Z, S, and \(P_i^n\) are defined as:
+    \begin{enumerate}
+      \item Zero function:
+        \[
+          Z(n) = 0 \forall n \in \mathbb{N}
+        \]
+      \item Successor function:
+        \[
+          S(n) = n + 1 \forall n \in \mathbb{N}
+        \]
+      \item Projection function: For every \(n\geq1\) and every i with \(1\leq i \leq n\):
+        \[
+          P_i^n(x_1,\dots,x_n) = x_i
+        \]
+    \end{enumerate}
+    
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Composition}
+  \begin{definition}
+    Given function \( g: \mathbb{N}^m \to \mathbb{N} \) (\( m \geq 1 \)) and any \( m \) functions \( h_i: \mathbb{N}^n \to \mathbb{N} \) (\( n \geq 1 \)), the \textbf{composition} of \( g \) and \( h_1, \dots, h_m \), denoted \( g \circ (h_1, \dots, h_m) \), is the function \( f: \mathbb{N}^n \to \mathbb{N} \) given by:
+    \[
+      f(x_1, \dots, x_n) = g(h_1(x_1, \dots, x_n), \dots, h_m(x_1, \dots, x_n)),
+    \]
+    where \( x_1, \dots, x_n \in \mathbb{N} \).
+  \end{definition}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Primitive Recursion}
+
+  \begin{definition}
+    Given any functions \( g: \mathbb{N}^m \to \mathbb{N} \) and \( h: \mathbb{N}^{m+2} \to \mathbb{N} \) (\( m \geq 1 \)), the function \( f: \mathbb{N}^{m+1} \to \mathbb{N} \) is defined by \textbf{primitive recursion} as:
+    \[
+      f(0, x_1, \dots, x_m) = g(x_1, \dots, x_m)
+    \]
+    \[
+      f(n+1, x_1, \dots, x_m) = h(f(n, x_1, \dots, x_m), n, x_1, \dots, x_m)
+    \]
+    for all \( n, x_1, \dots, x_m \in \mathbb{N} \). \\
+    If \( m = 0 \), then \( g \) is some fixed natural number, and we have:
+    \[
+      f(0) = g, \quad f(n+1) = h(f(n), n).
+    \]
+  \end{definition}
+
+  % \begin{itemize}
+  %   \item If \( g \) and \( h \) are total functions, then so is \( f \).
+  % \end{itemize}
+\end{frame}
+
+% \begin{frame}
+%   \frametitle{Primitive Recursion: Argument Permutation}
+
+%   \begin{itemize}
+%     \item The second clause of primitive recursion is:
+%     \[
+%       f(n+1, x_1, \dots, x_m) = h(f(n, x_1, \dots, x_m), n, x_1, \dots, x_m) \quad \text{(*1)}
+%     \]
+%     but in an earlier definition, it was:
+%     \[
+%       f(n+1, x_1, \dots, x_m) = h(n, f(n, x_1, \dots, x_m), x_1, \dots, x_m) \quad \text{(*2)}
+%     \]
+%     with the first two arguments of \( h \) permuted.
+%   \end{itemize}
+
+%   \begin{block}{Argument Permutation}
+%     \[
+%       h \circ (P^{m+2}_2, P^{m+2}_1, P^{m+2}_3, \dots, P^{m+2}_{m+2})(n, f(n, x_1, \dots, x_m), x_1, \dots, x_m)
+%     \]
+%     \[
+%       = h(f(n, x_1, \dots, x_m), n, x_1, \dots, x_m)
+%     \]
+%     and
+%     \[
+%       h \circ (P^{m+2}_2, P^{m+2}_1, P^{m+2}_3, \dots, P^{m+2}_{m+2})(f(n, x_1, \dots, x_m), n, x_1, \dots, x_m)
+%     \]
+%     \[
+%       = h(n, f(n, x_1, \dots, x_m), x_1, \dots, x_m).
+%     \]
+%   \end{block}
+% \end{frame}
+
+\begin{frame}
+  \frametitle{Minimization}
+
+  \begin{definition}
+    Given any function \( g: \mathbb{N}^{m+1} \to \mathbb{N} \) (\( m \geq 0 \)), the function \( f: \mathbb{N}^m \to \mathbb{N} \) is defined as follows:
+
+    \[
+      f(x_1, \dots, x_m) = \text{the least } n \in \mathbb{N} \text{ such that } g(n, x_1, \dots, x_m) = 0,
+    \]
+    and is \textbf{undefined} if there is no such \( n \) satisfying this condition.
+  \end{definition}
+
+  \begin{block}{Notation}
+    We say \( f \) is \textbf{defined by minimization} from \( g \), and write:
+    \[
+      f(x_1, \dots, x_m) = \mu x \, [g(x, x_1, \dots, x_m) = 0].
+    \]
+    For short, we write \( f = \mu g \).
+  \end{block}
+
+  % \begin{itemize}
+  %   \item Even if \( g \) is a total function, \( f \) may be undefined for some (or all) of its inputs.
+  % \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Computable Functions}
+
+  \begin{definition}
+    \textbf{Definition 3.17} (Herbrand–Gödel–Kleene). The set of \textit{partial computable} (or \textit{partial recursive}) functions is the smallest set of partial functions (defined on \( \mathbb{N}^n \) for some \( n \geq 1 \)) which contains the base functions and is closed under:
+    \begin{enumerate}
+      \item Composition.
+      \item Primitive recursion.
+      \item Minimization.
+    \end{enumerate}
+  \end{definition}
+
+  \begin{block}{Computable (Recursive) Functions}
+    The set of \textit{computable} (or \textit{recursive}) functions is the subset of partial computable functions that are \textbf{total functions} (i.e., defined for all inputs).
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Computable Functions}
+  \begin{block}{Kleene Normal Form}
+    It can be proven every partial computable function \( f: \mathbb{N}^m \to \mathbb{N} \) is computable as:
+    \[
+      f = g \circ \mu h,
+    \]
+    for some \textit{primitive recursive functions} \( g: \mathbb{N} \to \mathbb{N} \) and \( h: \mathbb{N}^{m+1} \to \mathbb{N} \).
+  \end{block}
+
   \begin{itemize}
-    \item A function \(f\) is \(\lambda\)-definable if there exists a closed \(\lambda\)-term \(F\) such that:
-      \begin{enumerate}
-        \item \(F\,c_{m_1}\cdots c_{m_n}\) has a normal form if and only if \(f(m_1,\dots,m_n)\) is defined.
-        \item When defined, \(F\,c_{m_1}\cdots c_{m_n} \rightarrow_\beta c_{f(m_1,\dots,m_n)}\).
-      \end{enumerate}
+    \item The significance of this result is that \( f \) is built from \textbf{total functions} using composition and primitive recursion, with only a single minimization at the end.
+    \item Before stating the main theorem, we need to define what it means for a numerical function to be definable in \( \lambda \)-calculus.
   \end{itemize}
+
+\end{frame}
+
+\subsection{Lambda-Definability}
+\begin{frame}{Lambda-Definability}
+  % \begin{itemize}
+  %   \item A function \(f\) is \(\lambda\)-definable if there exists a closed \(\lambda\)-term \(F\) such that:
+  %     \begin{enumerate}
+  %       \item \(F\,c_{m_1}\cdots c_{m_n}\) has a normal form if and only if \(f(m_1,\dots,m_n)\) is defined.
+  %       \item When defined, \(F\,c_{m_1}\cdots c_{m_n} \rightarrow_\beta c_{f(m_1,\dots,m_n)}\).
+  %     \end{enumerate}
+  % \end{itemize}
+  \begin{definition}
+    A function \(f: \mathbb{N}^n \to \mathbb{N}\) is said to be \textbf{\(\lambda\)-definable} if there exists a closed \(\lambda\)-term \(F\) such that:
+    \begin{enumerate}
+      \item \(F\,c_{m_1}\cdots c_{m_n}\) has a normal form if and only if \(f(m_1,\dots,m_n)\) is defined.
+      \item If defined, \(F\,c_{m_1}\cdots c_{m_n} \rightarrow_\beta c_{f(m_1,\dots,m_n)}\).
+    \end{enumerate}
+  \end{definition}
 \end{frame}
 
 \begin{frame}{Theorem Overview}
