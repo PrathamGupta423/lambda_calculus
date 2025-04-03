@@ -3,6 +3,8 @@
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{tikz}
 \usepackage{listings}
+\usepackage{mathtools}
+
 
 \usetheme{CambridgeUS}
 \usecolortheme{crane}
@@ -438,20 +440,62 @@ Any natural / reasonable notion of computation realizable in the physical world 
 \section{Beta-Reduction and Church–Rosser}
 \begin{frame}{Beta-Reduction}
   \begin{block}{Definition}
+    The relation \(\rightarrow_\beta\) called immediate $\beta$-reduction is the smallest relation satisying the property for all $\lambda$-terms \(M,N,P,Q\)
     \[
-    (\lambda x.M)N \rightarrow_\beta M[x:=N]
+      (\lambda x.M)N \rightarrow_\beta M[x := N] \text{ where M is safe for substitution \([x := N]\).}
     \]
-    \begin{itemize}
-      \item The fundamental rule of computation.
-    \end{itemize}
+    \[
+      \text{if } M \rightarrow_\beta N \text{ then } MQ \rightarrow_\beta NQ \text{ and } PM \rightarrow_\beta PN
+    \]
+    \[
+      \text{if } M \rightarrow_\beta N \text{ then } \lambda x.M \rightarrow_\beta \lambda x.N
+    \]
   \end{block}
+  \begin{itemize}
+    \item Transitive closure of $\rightarrow_\beta$ is denoted as $\rightarrow^+_\beta$.
+    \item reflexive and transitive closure of $\rightarrow_\beta$ is denoted as $\rightarrow^*_\beta$.
+    \item \textbf{\(\beta\)-conversion} denoted by $\xleftrightarrow{*}$ is smallest equivalence relation such that:
+      \[
+        \xleftrightarrow{*} = (\rightarrow_\beta \cup \rightarrow_\beta^{-1})
+      \]
+  \end{itemize}
+  
+
 \end{frame}
 
 \begin{frame}{Examples of $\beta$-Reduction}
-  \begin{itemize}
-    \item \((\lambda xy.x)uv \rightarrow_\beta u\).
-    \item \((\lambda xy.y)uv \rightarrow_\beta v\).
-  \end{itemize}
+  \begin{block}{Example}
+    \[
+      (\lambda x.x) y \rightarrow_\beta (x)[x := y] \rightarrow_\beta y
+    \]
+    \[
+      (\lambda xy.y)uv = (\lambda x.(\lambda y.y)u)v \rightarrow_\beta ((\lambda y.y)[x:=u])v = (\lambda y.y)v \rightarrow_\beta v 
+    \]
+  \end{block}
+  \begin{block}{example}
+    Let \(\omega = \lambda x.(xx)\) then
+    \[
+      \Omega = \omega \omega = (\lambda x.(xx))(\lambda x.(xx)) \rightarrow_\beta (\lambda x.(xx))[x := \lambda x.(xx)] = \omega\omega =\Omega
+    \]
+    This example shows that \(\beta\)-reduction may be infinite. This is what gives lambda calculus its power.
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example of $\beta$-Reduction}
+
+  \begin{block}{Example}
+    \(\beta\)-reduction can have growing terms also:
+    \[
+      (\lambda x.xxx)(\lambda x.xxx) \rightarrow_\beta (\lambda x.xxx)[x := \lambda x.xxx] = (\lambda x.xxx)(\lambda x.xxx)(\lambda x.xxx)
+    \]
+    \[
+      \rightarrow_\beta (\lambda x.xxx)(\lambda x.xxx)(\lambda x.xxx)(\lambda x.xxx)
+    \]
+    \[
+      \rightarrow_\beta (\lambda x.xxx)(\lambda x.xxx)(\lambda x.xxx)(\lambda x.xxx)\cdots
+    \]
+  \end{block}
 \end{frame}
 
 \begin{frame}{Church–Rosser Theorem}
