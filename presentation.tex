@@ -660,6 +660,9 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{itemize}
 \end{frame}
 
+
+
+
 \begin{frame}{Conditional}
   Let us define the conditional operator:
   \[
@@ -683,6 +686,18 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{aligned}
   \]
 \end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Boolean Operations}
+  \begin{itemize}
+    \item \textbf{And:} \(\text{And }b_1b_2 = \text{if }b_1 \text{ then (if }b_2 \text{ then \textbf{T} else \textbf{F}) else \textbf{F}}\)
+    \item \textbf{Or:  } \(\text{Or }b_1b_2 = \text{if }b_1 \text{ then \textbf{T} else (if }b_2 \text{ then \textbf{T} else \textbf{F})}\)
+    \item \textbf{Not:} \(\text{Not }b = \text{if }b \text{ then \textbf{F} else \textbf{T}}\)
+  \end{itemize}
+\end{frame}
+
 
 \begin{frame}{Constructing Ordered Pairs}
   For any two \( \lambda \)-terms \( M \) and \( N \), consider the combinators \( \pi_1 \) and \( \pi_2 \) defined as:
@@ -749,33 +764,56 @@ Any natural / reasonable notion of computation realizable in the physical world 
     &\xrightarrow{\beta} N, \quad \text{(since } F = K_* \text{)}
   \end{align*}
 \end{frame}
+
 % Section 7: Representing Natural Numbers
 \section{Representing Natural Numbers}
 \begin{frame}{Church Numerals}
   \begin{block}{Definition}
+    Church Numerals \(\mathbf{c_0,c_1,c_2,\dots}\) are defined by: 
     \[
-    c_n = \lambda f x. f^n(x)
-    \]
-    \begin{itemize}
-      \item \(c_0 = \lambda f x. x\)
-      \item \(c_1 = \lambda f x. f x\), \(c_2 = \lambda f x. f (f x)\), etc.
-    \end{itemize}
+      \mathbf{c_n} = \lambda fx. f^n x
+    \] 
   \end{block}
+  Observe:
+  \begin{itemize}
+    \item \(\mathbf{c_0} = \lambda fx. x = \mathbf{K_*}\)
+    \item \(\mathbf{c_1} = \lambda fx. f x\)
+    \item \(\mathbf{c_n} Fz = (\mathbf{c_n}F)z = ((\lambda fx.f^n(x))F)z \rightarrow_\beta^+ F^n(z)\)
+  \end{itemize}
 \end{frame}
 
-\begin{frame}{Iteration with Church Numerals}
-  \[
-    \text{Iter} = \lambda nfx. n f x
-  \]
+\begin{frame}{Iteration}
+
+  \begin{definition}
+    The \textbf{Iteration} combinator \textbf{Iter} is defined as:
+    \[
+      \text{Iter} = \lambda n f x. n f x
+    \]
+  \end{definition}
+  Notice that:
   \begin{itemize}
-    \item Iterates the function \(f\) \(n\) times on \(x\).
+    \item Iter combinator is same as the if then else combinator. This means that if we pass a boolean to the Iter combinator then it will behave like the if then else combinator.
+    \item \(\text{\textbf{Iter }} \mathbf{c_n} f x = \lambda fx. f^n x\) \\
+    proof:
+    \[
+      \text{\textbf{Iter} } \mathbf{c_n} f x \rightarrow \mathbf{c_n} f x = (\lambda fx.f^n x)fx = f^n x
+    \]
+
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Arithmetic Operations}
   \begin{itemize}
-    \item \textbf{Addition:} \( \text{Add} = \lambda m n f x. m f (n f x) \)
-    \item \textbf{Multiplication:} \( \text{Mult} = \lambda m n. m n \)
+    \item \textbf{Successor:} 
+    \(\text{\textbf{Succ}}_\text{\textbf{c}} = \lambda nfx.f(nfx)\)
+    \item \textbf{IsZero:} 
+    \(\text{\textbf{IsZero}}_\text{\textbf{c}} = \lambda x. x(\mathbf{K}\mathbf{F})\mathbf{T}\)
+    \item \textbf{Addition:}
+    \(\text{\textbf{Add}} = \lambda mn.\text{\textbf{Iter }} m \text{\textbf{ Succ}}_\text{\textbf{c }}n \)
+    \item \textbf{Multiplication:}
+    \(\text{\textbf{Mult}} = \lambda mn.\text{\textbf{Iter }} m \text{\textbf{ Add}}_\text{\textbf{c }}n\)
+    \item \textbf{Exponentiation:}
+    \(\text{\textbf{Exp}} = \lambda mn.\text{\textbf{Iter }} n \text{\textbf{ Mult}}_\text{\textbf{c }}m\)
   \end{itemize}
 \end{frame}
 
