@@ -475,11 +475,11 @@ Any natural / reasonable notion of computation realizable in the physical world 
 % Slide 2: Example of Alpha-Conversion
 \begin{frame}{Example: $\alpha$-Conversion}
   \textbf{Stepwise Renaming:}
-  \begin{align*}
-      \lambda fx. f(f(x)) &\rightarrow_{\alpha} \lambda f. \lambda y. f(f(y)) \\
-      &\rightarrow_{\alpha} \lambda g. \lambda y. g(g(y)) \\
-      &= \lambda gy. g(g(y)).
-  \end{align*}
+  \[
+      \lambda fx. f(f(x)) \rightarrow_{\alpha} \lambda f. \lambda y. f(f(y)) 
+      \rightarrow_{\alpha} \lambda g. \lambda y. g(g(y)) 
+      = \lambda gy. g(g(y)).
+  \]
   
   \textbf{Explanation:}
   \begin{itemize}
@@ -688,6 +688,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
 \end{frame}
 
 
+
 \begin{frame}
   \frametitle{Boolean Operations}
   \begin{itemize}
@@ -697,14 +698,72 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Pairs and Projections}
-  \begin{itemize}
-    \item Pair: \(\langle M, N \rangle = \lambda z. zMN\)
-    \item First projection: \(\pi_1 = \lambda z. zK\)
-    \item Second projection: \(\pi_2 = \lambda z. zK^*\)
-  \end{itemize}
-\end{frame}
 
+\begin{frame}{Constructing Ordered Pairs}
+  For any two \( \lambda \)-terms \( M \) and \( N \), consider the combinators \( \pi_1 \) and \( \pi_2 \) defined as:
+  \begin{align*}
+    \langle M, N \rangle &= \lambda z.\, z\, M\, N \\
+    &= \lambda z.\, \text{if } z \text{ then } M \text{ else } N \\
+    \pi_1 &= \lambda z.\, zK \\
+    \pi_2 &= \lambda z.\, zK_*
+  \end{align*}
+  Then, we have the following \(\beta\)-reductions:
+  \begin{align*}
+    \pi_1 \langle M, N \rangle &\xrightarrow{\beta} M \\
+    \pi_2 \langle M, N \rangle &\xrightarrow{\beta} N \\
+    \langle M, N \rangle T &\xrightarrow{\beta} M \\
+    \langle M, N \rangle F &\xrightarrow{\beta} N
+  \end{align*}
+\end{frame}
+\begin{frame}{Proof}
+  \begin{block}{Beta Reduction of \(\pi_1 \langle M, N \rangle\)}
+    \[
+      \pi_1 \langle M, N \rangle \xrightarrow{\beta} M
+    \]
+  \end{block}
+  Proof:  
+  We have:
+  \begin{align*}
+    \pi_1 \langle M, N \rangle &= (\lambda z.\, zK)(\lambda z.\, z M N) \\
+    &\xrightarrow{\beta} (zK)[z := \lambda z.\, z M N] \\
+    &= (\lambda z.\, z M N)K \\
+    &\xrightarrow{\beta} (z M N)[z := K] \\
+    &= K M N \xrightarrow{\beta} M
+  \end{align*}
+\end{frame}
+\begin{frame}{Proof}
+  \begin{block}{Beta Reduction of \(\pi_2 \langle M, N \rangle\)}
+    \[
+      \pi_2 \langle M, N \rangle \xrightarrow{\beta} N
+    \]
+  \end{block}
+  Proof:  
+  We have:
+  \begin{align*}
+    \pi_2 \langle M, N \rangle &= (\lambda z.\, zK_*)(\lambda z.\, z M N) \\
+    &\xrightarrow{\beta} (zK_*)[z := \lambda z.\, z M N] \\
+    &= (\lambda z.\, z M N)K_* \\
+    &\xrightarrow{\beta} (z M N)[z := K_*] \\
+    &= K_* M N \xrightarrow{\beta} N
+  \end{align*}
+\end{frame}
+\begin{frame}{Proof}
+  \begin{block}{Beta Reductions of Ordered Pair Application}
+    \[
+      \langle M, N \rangle T \xrightarrow{\beta} M, \quad \langle M, N \rangle F \xrightarrow{\beta} N
+    \]
+  \end{block}
+  Proof:  
+  We have:
+  \begin{align*}
+    \langle M, N \rangle T &= (\lambda z.\, z M N) T \\
+    &\xrightarrow{\beta} T M N \\
+    &\xrightarrow{\beta} M, \quad \text{(since } T = K \text{)} \\[10pt]
+    \langle M, N \rangle F &= (\lambda z.\, z M N) F \\
+    &\xrightarrow{\beta} F M N \\
+    &\xrightarrow{\beta} N, \quad \text{(since } F = K_* \text{)}
+  \end{align*}
+\end{frame}
 
 % Section 7: Representing Natural Numbers
 \section{Representing Natural Numbers}
@@ -759,17 +818,73 @@ Any natural / reasonable notion of computation realizable in the physical world 
 \end{frame}
 
 \begin{frame}{The Predecessor Function}
+  \begin{align*}
+    \text{Pred}(0) &= 0, \\
+    \text{Pred}(n + 1) &= n.
+  \end{align*}
   \begin{itemize}
     \item More challenging to define.
-    \item Kleene’s solution uses pairs:
+    \item Kleene\'s solution in his famous 1936 paper, uses pairs:
+    \[
+      \text{Pred}_K = \lambda n. \pi_2 (\text{Iter} \ n \ \lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle \ \langle c_0, c_0 \rangle).
+    \]
+  \end{itemize}
+\end{frame}
+\begin{frame}{The Predecessor Function}
+  \textbf{Why Kleene's Predecessor Function Works?}\\
+  We have:
+  \begin{align*}
+    (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^0 \langle c_0, c_0 \rangle &\xrightarrow{\beta} \langle c_0, c_0 \rangle.
+  \end{align*}
+\begin{block}{We claim that:}
+  \begin{align*}
+    (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^{n+1} \langle c_0, c_0 \rangle &\xrightarrow{\beta} \langle c_{n+1}, c_n \rangle.
+  \end{align*}
+\end{block}
+\end{frame}
+\begin{frame}{The Predecessor Function}
+    \begin{align*}Claim:
+      (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^{n+1} \langle c_0, c_0 \rangle &\xrightarrow{\beta} \langle c_{n+1}, c_n \rangle.
+    \end{align*}
+  Proof by Induction on n:\\
+  \textbf{Base Case:} \(n = 0\)\\
+  \begin{align*}
+    (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle) \langle c_0, c_0 \rangle &\xrightarrow{\beta} \langle \text{Succ}(\pi_1 \langle c_0, c_0 \rangle), \pi_1 \langle c_0, c_0 \rangle \rangle \\
+    &\xrightarrow{\beta} \langle \text{Succ}(c_0), c_0 \rangle \\
+    &\xrightarrow{\beta} \langle c_1, c_0 \rangle.
+  \end{align*}
+\end{frame}
+
+\begin{frame}{The Predecessor Function}
+  \begin{align*}Claim:
+    (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^{n+1} \langle c_0, c_0 \rangle &\xrightarrow{\beta} \langle c_{n+1}, c_n \rangle.
+  \end{align*}
+  \textbf{Inductive Step:} Assume true for \(n\), show for \(n+1\)\\
+  \[
+  \begin{aligned}
+    &(\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^{n+2} \langle c_0, c_0 \rangle \\
+    &= (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)((\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle)^{n+1} \langle c_0, c_0 \rangle) \\
+    &\xrightarrow{\beta} (\lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle) \langle c_{n+1}, c_n \rangle \\
+    &\xrightarrow{\beta} \langle c_{n+2}, c_{n+1} \rangle.
+  \end{aligned}
+  \]
+\end{frame}
+\begin{frame}{Predecessor Functions}
+  \begin{itemize}
+    \item \textbf{Kleene's predecessor function:}
       \[
-      \text{Pred} = \lambda n. \pi_2 \Bigl( \text{Iter}\ n\ \bigl(\lambda z. \langle \text{Succ}(\pi_1 z),\pi_1 z \rangle\bigr)\ \langle c_0, c_0 \rangle \Bigr)
+      \text{Pred}_K = \lambda n. \pi_2 (\text{Iter} \ n \ \lambda z. \langle \text{Succ}(\pi_1 z), \pi_1 z \rangle \ \langle c_0, c_0 \rangle).
+      \]
+  
+    \item \textbf{Alternative definition of predecessor:}
+      \[
+      \text{Pred}_c = \lambda x y z.\ x(\lambda p q.\ q(p y)) (K z) I.
       \]
   \end{itemize}
 \end{frame}
-
 \begin{frame}{Barendregt Numerals}
   \begin{itemize}
+    
     \item Alternative representation: 
       \[
       b_0 = I,\quad b_{n+1} = \langle F, b_n \rangle
@@ -824,10 +939,11 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \begin{itemize}
     \item Define:
       \[
-      F = \lambda g n.\, \text{if}\ (\text{IsZero}\ n)\ \text{then}\ c_1\ \text{else}\ \text{Mult}\ n\ (g\ (\text{Pred}\ n))
+      F = \lambda g\ n.\, \text{if}\ (\text{IsZero}\ n)\ \text{then}\ c_1\ \text{else}\ \text{Mult}\ n\ \bigl(g\ (\text{Pred}\ n)\bigr)
       \]
     \item Then \(G = \Theta F\) represents the factorial function.
   \end{itemize}
+  \vspace{-0.5em} % Adjust spacing to avoid overfull box
 \end{frame}
 
 % Section 9: Lambda-Definability of Computable Functions
