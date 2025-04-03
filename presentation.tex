@@ -985,13 +985,44 @@ Any natural / reasonable notion of computation realizable in the physical world 
 % Section 8: Fixed-Point Combinators and Recursion
 \section{Fixed-Point Combinators and Recursion}
 \begin{frame}{Fixed-Point Combinators}
-  \begin{itemize}
-    \item Enable recursive definitions without explicit recursion.
-    \item \textbf{Curry's Y-combinator:}
-      \[
-      Y = \lambda f. (\lambda x. f (x x)) (\lambda x. f (x x))
-      \]
-  \end{itemize}
+  Fixed-point combinators allow us to define recursive functions in the lambda calculus, giving us a way to express recursion without explicit self-reference.
+  \begin{block}{Y-Combinator}
+    \[
+    \mathbf{Y} = \lambda f. (\lambda x. f (x x)) (\lambda x. f (x x))
+    \]
+  \end{block}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Y-Combinator}
+  \begin{lemma}
+    
+    For any \(\lambda\)-term \(F\), we have:
+    \vspace{-0.5em}
+    \[
+      F(\mathbf{Y} F) \xleftrightarrow{*}_\beta Y F
+    \]
+    \textbf{Proof:}
+    Let W = \(\lambda x. F (x x)\)\\
+    Then we have:
+    \[
+      \begin{aligned}
+      \mathbf{Y} F &= (\lambda f. (\lambda x. f (x x)) (\lambda x. f (x x))) F
+      \rightarrow_\beta (\lambda x. F (x x)) (\lambda x. F (x x)) \\
+      &= (\lambda x. F (x x))W       \rightarrow_\beta F(W W) \\
+    \end{aligned}
+    \]
+    and:
+    \[
+      \begin{aligned}
+      F(\mathbf{Y} F) = F((\lambda f. (\lambda x. f (x x)) (\lambda x. f (x x))) F) &\rightarrow_\beta F((\lambda x. F (x x)) (\lambda x. F (x x))) \\
+      &= F(WW)
+      \end{aligned}
+    \]
+    and Therfore: \(F(\mathbf{Y}F) \xleftrightarrow{*}_\beta \mathbf{Y}F\)
+    
+  \end{lemma}
 \end{frame}
 
 \begin{frame}{Properties of the Y-Combinator}
