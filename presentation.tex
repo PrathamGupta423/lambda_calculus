@@ -705,18 +705,22 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{itemize}
 \end{frame}
 
+
 % Section 7: Representing Natural Numbers
 \section{Representing Natural Numbers}
 \begin{frame}{Church Numerals}
   \begin{block}{Definition}
+    Church Numerals \(\mathbf{c_0,c_1,c_2,\dots}\) are defined by: 
     \[
-    c_n = \lambda f x. f^n(x)
-    \]
-    \begin{itemize}
-      \item \(c_0 = \lambda f x. x\)
-      \item \(c_1 = \lambda f x. f x\), \(c_2 = \lambda f x. f (f x)\), etc.
-    \end{itemize}
+      \mathbf{c_n} = \lambda fx. f^n x
+    \] 
   \end{block}
+  Observe:
+  \begin{itemize}
+    \item \(\mathbf{c_0} = \lambda fx. x = \mathbf{K_*}\)
+    \item \(\mathbf{c_1} = \lambda fx. f x\)
+    \item \(\mathbf{c_n} Fz = (\mathbf{c_n}F)z = ((\lambda fx.f^n(x))F)z \rightarrow_\beta^+ F^n(z)\)
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Iteration with Church Numerals}
