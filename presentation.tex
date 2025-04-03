@@ -10,8 +10,8 @@
 \usecolortheme{crane}
 
 \title{From Abstraction to Computation: \\ Understanding Lambda Calculus}
-\author{Pratham Gupta Sehaj Ganjoo\\
-        Krishna Agarwal Gavish Bansal}
+\author{Pratham Gupta  Gavish Bansal\\
+        Sehaj Ganjoo  Krishna Agarwal}
 \institute{Indian Institute of Science, Bengaluru}
 \date{\today}
 
@@ -914,14 +914,21 @@ Any natural / reasonable notion of computation realizable in the physical world 
 
 \begin{frame}{Turing's $\Theta$-Combinator}
   \begin{itemize}
-    \item Defined as:
-      \[
-      \Theta = (\lambda x y. y(x x y)) (\lambda x y. y(x x y))
-      \]
-    \item Satisfies:
-      \[
-      \Theta F \rightarrow_\beta F (\Theta F)
-      \]
+  \item Defining the \textit{Turing $\mathbf{\Theta}$-combinator}:
+  \[ \mathbf{\Theta} := \left( \lambda xy.y\left( xxy \right)\right) \left( \lambda xy.y\left( xxy \right) \right) \]
+  \item Now, for any $\lambda$-term \(F\), we have:
+    \[
+      \mathbf{\Theta}F \xrightarrow[]{\text{+}}_\beta F(\mathbf{\Theta}F)
+    \]
+    \textit{Proof:} Writing \( A = (\lambda xy.y(xxy))\). Thus,
+    \( \mathbf{\Theta} = AA \). Now,
+    \begin{align*}
+      \mathbf{\Theta}F &= AA F = ((\lambda xy.y(xxy))A)F\\
+      &\xrightarrow[]{}_\beta (\lambda y.y(AAy))F \\
+      &\xrightarrow[]{\text{+}}_\beta F(AAF)\\
+      &= F(\mathbf{\Theta}F)\\
+      & \hspace{5cm} \blacksquare
+    \end{align*}
   \end{itemize}
 \end{frame}
 
