@@ -953,6 +953,30 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \vspace{-0.5em} % Adjust spacing to avoid overfull box
 \end{frame}
 
+\begin{frame}{Proof: Factorial Function}
+  \begin{itemize}
+    \item Let's prove that \(G\) represents the factorial function by induction.
+    \item Base case: \(n = 0\)
+      \[
+      G c_0 \rightarrow_\beta F (G) c_0 \rightarrow_\beta c_1
+      \]
+    \item Inductive step: Assume true for \(n\), show for \(n+1\)
+    \item   Inductive hypothesis:
+      \[
+      G c_n \rightarrow_\beta c_{n!}
+      \]
+      \[
+      G c_{n+1} \rightarrow_\beta F (G) c_{n+1} \rightarrow_\beta \text{Mult} (c_{n+1}) (G c_n) \rightarrow_\beta \text{Mult} (c_{n+1}) (c_{n!})
+      \]
+      \[
+      G c_{n+1} \rightarrow_\beta F (G) c_{n+1} \rightarrow_\beta \text{Mult} (c_{n+1}) (G c_n) \rightarrow_\beta \text{Mult} (c_{n+1}) (c_{n!})
+      \]
+    \item Hence, \(G\) computes the factorial function.
+  \end{itemize}
+  \vspace{-0.5em} % Adjust spacing to avoid overfull box
+\end{frame}
+ 
+
 % Section 9: Lambda-Definability of Computable Functions
 \section{Lambda-Definability of Computable Functions}
 \begin{frame}{Computable Functions}
