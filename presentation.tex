@@ -49,6 +49,16 @@
 \section{Introduction and Motivation}
 
 \begin{frame}{Historical Background}
+\textbf{Hilbert's program:}
+\begin{itemize}
+    \item Formalize all of mathematics in a consistent axiomatic system. Such that:
+    \begin{itemize}
+      \item \textbf{Consistency:} No contradictions can be derived from the axioms.
+      \item \textbf{Completeness:} All true statements can be derived from the axioms.
+      \item \textbf{Decidability:} There exists a mechanical procedure to determine the truth of any statement.
+    \end{itemize}
+
+\end{itemize}
 \textbf{Leibniz’s Ideal:}
 \begin{itemize}
     \item A "universal language" to express all possible problems.
@@ -56,7 +66,7 @@
 \end{itemize}
 \bigskip
 By the early 20th century, set theory and first-order logic (Frege, Russell, Zermelo) fulfilled point (1).\\
-However, point (2) remained open—this became the Entscheidungsproblem ("decision problem"):\\
+However, point (2) remained open—this became the \textbf{Entscheidungsproblem} ("decision problem"):\\
 \begin{quote}
     Can all problems be solved mechanically?
 \end{quote}
@@ -68,6 +78,7 @@ In order to do so, they had to formalize "computability.\\
     \item Church (1936): Introduced lambda calculus as a formal model of computation
     \item Turing (1936/37): Introduced Turing machines as an alternative model.
     \item Turing (1937): Proved both models are equivalent—defining the same class of computable functions
+    \item Class of functions computable by these is called \textbf{Recursive Functions}.
 \end{itemize}
 
 \end{frame}
@@ -96,18 +107,18 @@ In order to do so, they had to formalize "computability.\\
 Any natural / reasonable notion of computation realizable in the physical world can be simulated by a TM (or equivalently, by lambda calculus)
 \end{frame}
 
-\begin{frame}{Overview of Topics}
-  \begin{itemize}
-    \item Syntax of the lambda-calculus.
-    \item Free and bound variables.
-    \item Substitution and $\alpha$-conversion.
-    \item $\beta$-reduction and the Church–Rosser theorem.
-    \item Combinators and representation of booleans.
-    \item Encoding natural numbers.
-    \item Fixed-point combinators and recursion.
-    \item $\lambda$-definability of computable functions.
-  \end{itemize}
-\end{frame}
+% \begin{frame}{Overview of Topics}
+%   \begin{itemize}
+%     \item Syntax of the lambda-calculus.
+%     \item Free and bound variables.
+%     \item Substitution and $\alpha$-conversion.
+%     \item $\beta$-reduction and the Church–Rosser theorem.
+%     \item Combinators and representation of booleans.
+%     \item Encoding natural numbers.
+%     \item Fixed-point combinators and recursion.
+%     \item $\lambda$-definability of computable functions.
+%   \end{itemize}
+% \end{frame}
 
 % Section 2: Syntax of the Lambda Calculus
 \section{Syntax of the Lambda Calculus}
@@ -524,6 +535,9 @@ Any natural / reasonable notion of computation realizable in the physical world 
         \]
     \end{itemize}
   \end{theorem}
+  \begin{block}{Note}
+    For proof of equivivalence of two, please refer to the Appendix section.
+  \end{block}
 \end{frame}
 
 \begin{frame}{Church–Rosser Theorem: Visual Representation}
@@ -540,79 +554,11 @@ Any natural / reasonable notion of computation realizable in the physical world 
     \end{figure}
   \end{columns}
 \end{frame}
-\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
-  \begin{block}{Proof: (1)$\leftarrow$ (2)}   
-    Assume that (2) holds. Since $\xrightarrow{*}_\beta$ is contained in $\xleftrightarrow{*}_\beta$, if 
-    \[
-    M \xrightarrow{*}_\beta M_1 \quad \text{and} \quad M \xrightarrow{*}_\beta M_2,
-    \]
-    then $M_1 \xleftrightarrow{*}_\beta M_2$.
-
-    \pause
-    Since (2) holds, there exists some $\lambda$-term $M_3$ such that 
-    \[
-    M_1 \xrightarrow{*}_\beta M_3 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_3,
-    \]
-    which is exactly statement (1).
-  \end{block}
-\end{frame}
-\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
-  \begin{block}{Key Observation:}   
-      To prove that (1) implies (2), we use the fact:
-      \[
-        \xleftrightarrow{*}_\beta = (\xrightarrow{\ }_\beta \cup \xleftarrow{\ }_\beta)^*
-      \]
-      So, $M_1 \xleftrightarrow{*}_\beta M_2$ if and only if:
-      \begin{itemize}
-        \item[(a)] $M_1 = M_2$, or
-        \item[(b)] There exists $M_3$ such that $M_1 \xrightarrow{\ }_\beta M_3$ and $M_3 \xleftrightarrow{*}_\beta M_2$, or
-        \item[(c)] There exists $M_3$ such that $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xleftrightarrow{*}_\beta M_2$.
-      \end{itemize}
-  \end{block}
-\end{frame}
-\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
-  \begin{block}{Proof: (1)$\rightarrow$ (2): Induction on Number of Steps in $M_1 \xleftrightarrow{*}_\beta M_2$}
-    \textbf{Case (a):} $M_1 = M_2$ \\
-    Then (2) holds trivially with $M_3 = M_1 = M_2$.
-
-    \vspace{1em}
-    \textbf{Case (b):} $M_1 \xrightarrow{\ }_\beta M_3$ and $M_3 \xleftrightarrow{*}_\beta M_2$ \\
-    By induction hypothesis, $\exists M_4$ such that:
-    \[
-    M_3 \xrightarrow{*}_\beta M_4 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4
-    \]
-    Hence, 
-    \[
-    M_1 \xrightarrow{\ }_\beta M_3 \xrightarrow{*}_\beta M_4, \quad \text{so } M_1 \xrightarrow{*}_\beta M_4
-    \]
-    Thus, (2) is satisfied.
-
-  \end{block}
-\end{frame}
-  \begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
-    \begin{block}{Proof: (1)$\rightarrow$ (2): Induction on Number of Steps in $M_1 \xleftrightarrow{*}_\beta M_2$}
-    \textbf{Case (c):} $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xleftrightarrow{*}_\beta M_2$ \\
-    By induction hypothesis, $\exists M_4$ such that:
-    \[
-    M_3 \xrightarrow{*}_\beta M_4 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4
-    \]
-    Since $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xrightarrow{*}_\beta M_4$, by (1), $\exists M_5$ such that:
-    \[
-    M_1 \xrightarrow{*}_\beta M_5 \quad \text{and} \quad M_4 \xrightarrow{*}_\beta M_5
-    \]
-    Hence, 
-    \[
-    M_1 \xrightarrow{*}_\beta M_5 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4 \xrightarrow{*}_\beta M_5
-    \]
-    proving (2).
-  \end{block}
-\end{frame}
 
 % Section 6: Useful Combinators
 \section{Some Useful Combinators}
 
 
-\subsection{Bools, Conditional and Pairs}
 \begin{frame}{Combinators I, K, and S}
   Let us define the following combinators:
   \begin{itemize}
@@ -629,9 +575,6 @@ Any natural / reasonable notion of computation realizable in the physical world 
     \item \(\mathbf{K}_*MN \rightarrow_\beta N\)
   \end{itemize}
 \end{frame}
-
-
-
 
 \begin{frame}{Conditional}
   Let us define the conditional operator:
@@ -1468,5 +1411,77 @@ Any natural / reasonable notion of computation realizable in the physical world 
 \end{frame}
 
 % Additional slides can be added to reach the 50-60 slide target by expanding on proofs, examples, and further details.
+
+
+\section*{Appendix}
+
+\subsection*{Church-Rosser Theorem}
+\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+  \begin{block}{Proof: (1)$\leftarrow$ (2)}   
+    Assume that (2) holds. Since $\xrightarrow{*}_\beta$ is contained in $\xleftrightarrow{*}_\beta$, if 
+    \[
+    M \xrightarrow{*}_\beta M_1 \quad \text{and} \quad M \xrightarrow{*}_\beta M_2,
+    \]
+    then $M_1 \xleftrightarrow{*}_\beta M_2$.
+
+    \pause
+    Since (2) holds, there exists some $\lambda$-term $M_3$ such that 
+    \[
+    M_1 \xrightarrow{*}_\beta M_3 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_3,
+    \]
+    which is exactly statement (1).
+  \end{block}
+\end{frame}
+\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+  \begin{block}{Key Observation:}   
+      To prove that (1) implies (2), we use the fact:
+      \[
+        \xleftrightarrow{*}_\beta = (\xrightarrow{\ }_\beta \cup \xleftarrow{\ }_\beta)^*
+      \]
+      So, $M_1 \xleftrightarrow{*}_\beta M_2$ if and only if:
+      \begin{itemize}
+        \item[(a)] $M_1 = M_2$, or
+        \item[(b)] There exists $M_3$ such that $M_1 \xrightarrow{\ }_\beta M_3$ and $M_3 \xleftrightarrow{*}_\beta M_2$, or
+        \item[(c)] There exists $M_3$ such that $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xleftrightarrow{*}_\beta M_2$.
+      \end{itemize}
+  \end{block}
+\end{frame}
+\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+  \begin{block}{Proof: (1)$\rightarrow$ (2): Induction on Number of Steps in $M_1 \xleftrightarrow{*}_\beta M_2$}
+    \textbf{Case (a):} $M_1 = M_2$ \\
+    Then (2) holds trivially with $M_3 = M_1 = M_2$.
+
+    \vspace{1em}
+    \textbf{Case (b):} $M_1 \xrightarrow{\ }_\beta M_3$ and $M_3 \xleftrightarrow{*}_\beta M_2$ \\
+    By induction hypothesis, $\exists M_4$ such that:
+    \[
+    M_3 \xrightarrow{*}_\beta M_4 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4
+    \]
+    Hence, 
+    \[
+    M_1 \xrightarrow{\ }_\beta M_3 \xrightarrow{*}_\beta M_4, \quad \text{so } M_1 \xrightarrow{*}_\beta M_4
+    \]
+    Thus, (2) is satisfied.
+
+  \end{block}
+\end{frame}
+  \begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+    \begin{block}{Proof: (1)$\rightarrow$ (2): Induction on Number of Steps in $M_1 \xleftrightarrow{*}_\beta M_2$}
+    \textbf{Case (c):} $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xleftrightarrow{*}_\beta M_2$ \\
+    By induction hypothesis, $\exists M_4$ such that:
+    \[
+    M_3 \xrightarrow{*}_\beta M_4 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4
+    \]
+    Since $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xrightarrow{*}_\beta M_4$, by (1), $\exists M_5$ such that:
+    \[
+    M_1 \xrightarrow{*}_\beta M_5 \quad \text{and} \quad M_4 \xrightarrow{*}_\beta M_5
+    \]
+    Hence, 
+    \[
+    M_1 \xrightarrow{*}_\beta M_5 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4 \xrightarrow{*}_\beta M_5
+    \]
+    proving (2).
+  \end{block}
+\end{frame}
 
 \end{document}
