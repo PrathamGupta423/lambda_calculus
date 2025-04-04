@@ -351,7 +351,8 @@ Any natural / reasonable notion of computation realizable in the physical world 
   Example:
   \begin{itemize}
     \item  $(x+1)[x:= 2]$ = (2+1)
-    \item $(\lambda x.(x+1))[x:=2]$ = $(\lambda x.(x+1))$ (no free $x$)\\
+    \item $(\lambda x.(x+1))[x:= \lambda y.z]$ = $(\lambda x.(x+1))$ (no free $x$)\\
+    \item $(\lambda x.(xt))[t:= \lambda y.z]$ = $(\lambda x.(x \lambda y.z))$ \\
   \end{itemize}
 \end{frame}
 
@@ -891,8 +892,18 @@ Any natural / reasonable notion of computation realizable in the physical world 
     \item $fact(0)=1$
     \item $fact(n)=n*fact(n-1)$
   \end{itemize}
+  \begin{block}{Factorial Function}
+    \texttt{
+      int fact(int n) \{ \newline
+      \hspace*{1em}if (n == 0) return 1; \newline
+      \hspace*{1em}else return n * fact(n - 1); \newline
+      \}
+    }
+  \end{block}
+  \begin{block}{}
+    \ fact=($\lambda$ n. if (IsZero n) then 1 else Mult N (fact (Pred n))) \\
+  \end{block}
 \end{frame}
-
 \begin{frame}{Fixed-Point Combinators}
   Fixed-point combinators allow us to define recursive functions in the lambda calculus, giving us a way to express recursion without explicit self-reference.
   \begin{block}{Y-Combinator}
