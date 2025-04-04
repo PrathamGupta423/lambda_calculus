@@ -1322,24 +1322,62 @@ Any natural / reasonable notion of computation realizable in the physical world 
 \begin{frame}{Step 3: Closure under Primitive Recursion}
   \begin{itemize}
       \item If $f$ is defined by primitive recursion from $g$ and $h$, and $G$ and $H$ $\lambda$-define them, then:
-      \[
+      \small \[  
       F = \lambda n x_1 \dots x_m. \pi_1 (\text{Iter} n \lambda z. \langle H \pi_1 z \pi_2 z x_1 \dots x_m, \mathbf{Succ_c}(\pi_2 z) \rangle \langle G x_1 \dots x_m, c_0 \rangle)
       \]
       \item This ensures $F$ $\lambda$-defines $f$.
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Step 3: Closure under Primitive Recursion}
+  \textbf{Proof:} We will prove by induction
+  \small\[
+     (\lambda z. \langle H \pi_1 z \pi_2 z \mathbf{c_{n_1}} \dots \mathbf{c_{n_m}}, \mathbf{Succ_c}(\pi_2 z) \rangle)^n \langle G \mathbf{c_{n_1}} \dots \mathbf{c_{n_m}}, \mathbf{c_0} \rangle \rightarrow_\beta \langle \mathbf{c}_{f(n,n_1,\dots,n_m)}, \mathbf{c_{n}} \rangle
+  \]
+  Base case: \(n = 0\)\\
+  \[
+  \left( \lambda z. \langle H \, \pi_1 z \, \pi_2 z \, \mathbf{c}_{n_1} \cdots \mathbf{c}_{n_m}, \mathbf{Succ_c}(\pi_2 z) \rangle \right)^0 \langle G \mathbf{c}_{n_1} \cdots \mathbf{c}_{n_m}, \mathbf{c}_0 \rangle
+  \]
+
+  \[
+  \overset{+}{\longrightarrow}_{\beta} \langle G \mathbf{c}_{n_1} \cdots \mathbf{c}_{n_m}, \mathbf{c}_0 \rangle = \langle \mathbf{c}_{g(n_1, \dots, n_m)}, \mathbf{c}_0 \rangle = \langle \mathbf{c}_{f(0, n_1, \dots, n_m)}, \mathbf{c}_0 \rangle.
+  \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Step 3: Closure under Primitive Recursion}
+
+  \begin{align*}
+    &(\lambda z. \langle H \pi_1 z \pi_2 z \mathbf{c_{n_1}} \cdots \mathbf{c_{n_m}}, \mathbf{Succ_c} (\pi_2 z)) \rangle^{n+1} \langle G \mathbf{c_{n_1}} \cdots \mathbf{c_{n_m}}, \mathbf{c_0} \rangle \\
+    &= (\lambda z. \langle H \pi_1 z \pi_2 z \mathbf{c_{n_1}} \cdots \mathbf{c_{n_m}}, \mathbf{Succ_c} (\pi_2 z)) \rangle \\
+    &\quad (\lambda z. \langle H \pi_1 z \pi_2 z \mathbf{c_{n_1}} \cdots \mathbf{c_{n_m}}, \mathbf{Succ_c} (\pi_2 z)) \rangle^n \langle G \mathbf{c_{n_1}} \cdots \mathbf{c_{n_m}}, \mathbf{c_0} \rangle) \\
+    &\xrightarrow{+}_\beta (\lambda z. \langle H \pi_1 z \pi_2 z \mathbf{c_{n_1}} \cdots \mathbf{c_{n_m}}, \mathbf{Succ_c} (\pi_2 z)) \rangle \langle \mathbf{c}_{f(n, n_1, ..., n_m)}, \mathbf{c_n} \rangle \\
+    &\xrightarrow{+}_\beta \langle H \mathbf{c}_{f(n, n_1, ..., n_m)} \mathbf{c_n} \mathbf{c_{n_1}} \cdots \mathbf{c_{n_m}}, \mathbf{Succ_c} \mathbf{c_n} \rangle \\
+    &\xrightarrow{+}_\beta \langle \mathbf{c}_{h(f(n, n_1, ..., n_m), n, n_1, ..., n_m}, \mathbf{c_{n+1}} \rangle = \langle \mathbf{c}_{f(n+1, n_1, ..., n_m)}, \mathbf{c_{n+1}} \rangle.
+    \end{align*}
+
+\end{frame}
+
 \begin{frame}{Step 4: Closure under Minimization}
   Suppose $f$ is total and defined by minimization from $g$, where $g$ is $\lambda$-defined by $G$. Define:
   \[
-  J = \lambda f x_1 \dots x_m. \text{if } \text{IsZero}_c G x_1 \dots x_m \text{ then } x \text{ else } f(\mathbf{Succ_c} x) x_1 \dots x_m
+  J = \lambda f x x_1 \dots x_m. \text{if } \text{\textbf{IsZero}}_\mathbf{c} G x x_1 \dots x_m \text{ then } x \text{ else } f(\mathbf{Succ_c} x) x_1 \dots x_m
   \]
   \[
   F = \Theta J
   \]
+  Clearly:
+  \[
+    F \mathbf{c}_n \mathbf{c}_{n_1} \cdots \mathbf{c}_{n_m} \xrightarrow{+}_\beta 
+    \begin{cases} 
+    \mathbf{c}_n & \text{if } g(n, n_1, \ldots, n_m) = 0 \\ 
+    F \mathbf{c}_{n+1} \mathbf{c}_{n_1} \cdots \mathbf{c}_{n_m} & \text{otherwise}
+    \end{cases}
+  \]
   \begin{itemize}
       \item This ensures that $F$ $\lambda$-defines $f$.
-      \item Since $f$ is total, some least $n$ will be found.
+      \item Since $F$ is total, some least $n$ will be found.
   \end{itemize}
 \end{frame}
 
@@ -1358,43 +1396,23 @@ Any natural / reasonable notion of computation realizable in the physical world 
 
 \begin{frame}{Conclusion}
   \begin{itemize}
-      \item Combining Theorems 3.10 and 3.11, the set of $\lambda$-definable total functions equals the set of total computable functions.
-      \item Similarly, for partial functions.
-      \item Thus, the $\lambda$-calculus has universal computing power.
+      \item With some work, it is possible to show that lists can be represented in the \(\lambda\)-calculus:
+      \begin{itemize}
+        \item We have to use the Pair combinators to store pair within a pair to form a linked list.
+      \end{itemize}
+      \item Since the tape of turing machine can be represented as a list, we can simulate a Turing machine using the \(\lambda\)-calculus. (Very Tedious Task)
+      \item The Construction of turing machine in \(\lambda\)-calculus mimics the proof that Turing machince computes a computable function.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Remark}
   \begin{itemize}
-      \item Lists can be represented in $\lambda$-calculus, allowing Turing machine simulation.
       \item $\lambda$-calculus has the same power as Turing machines.
       \item This leads to undecidability results similar to the halting problem and Rice’s theorem.
   \end{itemize}
   \textbf{Scott-Curry Theorem:} An analog of Rice’s theorem follows as a corollary.
 \end{frame}
 
-
-
-\begin{frame}{Proof Sketch (1): Base Functions and Composition}
-  \begin{itemize}
-    \item Base functions: zero, successor, and projections are \(\lambda\)-definable.
-    \item Closure under composition is straightforward.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Proof Sketch (2): Primitive Recursion}
-  \begin{itemize}
-    \item Use the iterator combinator and pairing.
-    \item Construct a term that computes the recursive function by induction.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Proof Sketch (3): Minimization}
-  \begin{itemize}
-    \item Define a combinator that searches for the least number \(n\) such that \(g(n,\dots)=0\).
-    \item Utilize a fixed-point combinator for the iterative search.
-  \end{itemize}
-\end{frame}
 
 % Section 10: Summary and Conclusions
 \section{Summary and Conclusions}
@@ -1421,22 +1439,22 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \begin{itemize}
     \item Study evaluation strategies (call-by-name, call-by-value).
     \item Explore type systems: Simply typed lambda-calculus.
-    \item Look into extensions: System F, lambda calculus with recursion.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{References}
-  \begin{itemize}
-    \item Barendregt, H. (1984). \textit{The Lambda Calculus: Its Syntax and Semantics.}
-    \item Church, A. (1932-1936). Papers on the lambda-calculus.
-    \item Kleene, S. C. (1936). On the normal form theorem.
-  \end{itemize}
-\end{frame}
 
 \begin{frame}{Acknowledgements}
+  These slides were made for seminar presentation for \textbf{Automata Theory and Computability} [UMC205] 2025 course at \textbf{Indian Institute of Science, Bengaluru} under the guidance of \textbf{Prof. Deepak D'Souza}. \\
+  We have refrenced:
   \begin{itemize}
-    \item Based on a detailed exposition of the lambda-calculus.
-    \item Many thanks to the pioneers of lambda-calculus.
+    \item Proofs, Computability, Undecidability, Complexity, And the Lambda Calculus An Introduction [Jean Gallier and Jocelyn Quaintance]
+  \end{itemize}
+  Team Members:
+  \begin{itemize}
+    \item \textbf{Gavish Bansal:} gavishbansal@iisc.ac.in
+    \item \textbf{Sehaj Ganjoo:} sehajganjoo@iisc.ac.in
+    \item \textbf{Pratham Gupta:} prathamgupta@iisc.ac.in
+    \item \textbf{Krishna Agarwal:} krishnaagarw@iisc.ac.in
   \end{itemize}
 \end{frame}
 
