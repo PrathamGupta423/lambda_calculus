@@ -6,6 +6,7 @@
 \usepackage{mathtools}
 
 
+\usetikzlibrary{trees}
 \usetheme{CambridgeUS}
 \usecolortheme{crane}
 
@@ -140,26 +141,26 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \begin{block}{Some Valid Lambda Expressions:}
   \begin{itemize}
       \item $x$
-      \item $\lambda x.x$
+      \item $\lambda x.\lambda x.\,x$ 
       \item $xy$
       \item $x\lambda y.(x(yy))$
-      \item $\lambda x.\lambda y.(x)$ (invalid)
+      \item $\lambda x.\lambda y.\lambda z.\,(x\;(y\;z))$
+      \item $\lambda\lambda x.x$ (invalid)
   \end{itemize}
   \end{block}
 \end{frame}
 
-\begin{frame}{Tree Representation}
-    \begin{itemize}
-      \item Each $\lambda$-term can be represented as a labeled tree.
-      \item Leaves represent variables.
-      \item Interior nodes represent applications or abstractions.
-    \end{itemize}
-    \begin{center}
-      % Replace with your own image if desired
-        \includegraphics[width=0.5\textwidth]{images/treeimage.png}
-    \end{center}
-\end{frame}
-  
+% \begin{frame}{Tree Representation}
+%     \begin{itemize}
+%       \item Each $\lambda$-term can be represented as a labeled tree.
+%       \item Leaves represent variables.
+%       \item Interior nodes represent applications or abstractions.
+%     \end{itemize}
+%     \begin{center}
+%       % Replace with your own image if desired
+%         \includegraphics[width=0.5\textwidth]{images/treeimage.png}
+%     \end{center}
+% \end{frame}
 
 
 \begin{frame}{Notation Conventions}
@@ -174,7 +175,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
         \lambda x_1.\lambda x_2.\cdots\lambda x_n.M \quad\text{is written as}\quad \lambda x_1 \cdots x_n.M.
       \]
       e.g. \(\lambda x.xy\) is \(\lambda x.(xy)\), and
-      \(\lambda x.\lambda x.x\) is \(\lambda x.(\lambda x.x)\).
+      \(\lambda x.\lambda x.x\) is \(\lambda xx.x\).
   \end{itemize}
 \end{frame}
 \begin{frame}{Semantics}
@@ -187,73 +188,100 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \vspace{1em}
   \textbf{Example:}
   \begin{itemize}
-    \item $\lambda x.\,+ x 1$ defines a function that adds 1 to its argument.
-    \item ($\lambda x.\,+ x 1$) 2 evaluates as $(+ 2 1)$, which is 3.
+    \item $\lambda x.\,(x+1)$ defines a function that adds 1 to its argument.
+    \item ($\lambda x.\, (x+1$)) 2 evaluates as $(2+1)$, which is 3.
   \end{itemize}
   \begin{block}{}
     Q. How can + function be defined if abstractions only accept 1 parameter?\\
   \end{block}
 \end{frame}
-\begin{frame}{Currying}
-  Technique to translate the evaluation of a function that takes multiple arguments into a sequence of functions that take a single argument.\\
-  \vspace{1em}
+
+\subsection{Currying}
+\begin{frame}
+  \frametitle{Currying}
+  \begin{block}{Definition}
+    In lambda calculus, a abstraction takes only one argument.\\
+    \textbf{Currying}( named after Haskell Curry) is the process of transforming a function that takes multiple arguments into a sequence of functions, each taking a single argument.
+  \end{block}
   Example:
   \[
-  \lambda x.\lambda y.((+ x)y)
+  \lambda x.\lambda y.(x+y)
   \]
   \[
-  (\lambda x.\lambda y.((+ x)y))\ 10\ 20 \rightarrow (\lambda y.((+ 10)y))\ 20 \rightarrow ((+ 10)20) \rightarrow 30
+  (\lambda x.\lambda y.(x+y))\ 10\ 20 \rightarrow (\lambda y.(10+y))\ 20 \rightarrow (10+20) \rightarrow 30
   \]
 \end{frame}
 
+\begin{frame}{Currying}
+
+  Consider the function: \(f:\mathbb{N}\times\mathbb{N} \rightarrow \mathbb{N}\) \\
+  If we fix the first argument, we get a function \(F_x:\mathbb{N} \rightarrow \mathbb{N}\)\\
+  \[
+    F_x(y) = f(x,y) \forall y \in \mathbb{N}
+  \]  
+  So we can write \(F_x = \lambda y.f(x,y)\)
+  and then the function \(x \mapsto F_x\) can be written as:
+  \[
+    F = \lambda x.F_x = \lambda x.\lambda y.f(x,y)
+  \]
+  Hence we obtain 
+  \[
+    (F\;M)N \rightarrow_\beta F_M N \rightarrow_\beta f(M,N)
+  \]
+\end{frame}
+\begin{frame}
+  \frametitle{Currying}
+
+  Hence we have ability to transform a function that takes multiple arguments into a sequence of functions, each taking a single argument.\\
+  As a notational convention, we can write:
+  \[
+  \begin{aligned}
+      F &= \lambda x_1.\lambda x_2.\cdots\lambda x_n.f(x_1,x_2,\ldots,x_n) \\ 
+        &= \lambda x_1 x_2 \cdots x_n. f(x_1,x_2,\ldots,x_n)
+  \end{aligned}
+  \]
+\end{frame}
 
 \subsection{Free and Bound Variables}
-\begin{frame}{Free vs. Bound Variables}
-
-  \begin{definition}
-    For any $\lambda$-term \(M\), the \textbf{free variables} (FV) and \textbf{bound variables} (BV) are defined as follows:
-    \begin{itemize}
-      \item If \(M = x\) is a variable, then:
-        \[
-        \text{FV}(x) = \{x\}, \quad \text{BV}(x) = \emptyset
-        \]
-      \item If \(M = (M_1 M_2)\), then:
-        \[
-        \text{FV}(M) = \text{FV}(M_1) \cup \text{FV}(M_2), \quad \text{BV}(M) = \text{BV}(M_1) \cup \text{BV}(M_2)
-        \]
-      \item If \(M = \lambda x.M_1\), then:
-        \[
-        \text{FV}(M) = \text{FV}(M_1) \setminus \{x\}, \quad \text{BV}(M) = \text{BV}(M_1) \cup \{x\}
-        \]
-    \end{itemize}
-  \end{definition}
-
-\end{frame}
-\begin{frame}{Free and Bound Variables}
-  Examples:
+\begin{frame}{Free Variables}
+  Intuitively\\
+  Free Variables(FV): Variables that are not bound by any abstraction.
   \begin{itemize}
     \item Is $x$ free in $\lambda x.x$? (No)
     \item Is $x$ free in $(\lambda x.xy)x$? (Yes)\\
     $(\lambda x.xy)x \to (xy)$
   \end{itemize}
-  \vspace{1em}
-  What is the scope of the variable?\\
-  -It is bound by what abstraction?\\
+  \begin{block}{Definition}
+    For any $\lambda$-term \(M\), the set of free variables is denoted as \(\text{FV}(M)\) and is defined as:
+    \begin{itemize}
+      \item If \(M = x\) then: \text{FV}(x) = \{x\}
+      \item If \(M = (M_1 M_2)\), then:$\text{FV}(M) = \text{FV}(M_1) \cup \text{FV}(M_2)$,
+      \item If \(M = \lambda x.M_1\), then:$\text{FV}(M) = \text{FV}(M_1) \setminus \{x\}$
+    \end{itemize}
+
+  \end{block}
+\end{frame}
+\begin{frame}{Bound Variables}
+  Intuitively\\
+  Bound Variables(BV): Variables that are not free.\\
+  Bound variables are declared within a $\lambda$-abstraction.\\
   \begin{itemize}
     \item $(\lambda \textcircled{x}.\lambda y.\textcircled{x}y) (\lambda z.\mathbf{x}z)$
   \end{itemize}
+  \begin{block}{Definition}
+    For any $\lambda$-term \(M\), the set of bound variables is denoted as \(\text{BV}(M)\) and is defined as:
+    \begin{itemize}
+      \item If \(M = x\) then: $\text{BV}(x) = \emptyset$
+      \item If \(M = (M_1 M_2)\), then:$\text{BV}(M) = \text{BV}(M_1) \cup \text{BV}(M_2)$,
+      \item If \(M = \lambda x.M_1\), then:$\text{BV}(M) = \text{BV}(M_1) \cup \{x\}$
+    \end{itemize}
+  \end{block}
 \end{frame}
-\begin{frame}{Free and Bound Variables}
+\begin{frame}{Combinators}
 
   \begin{definition}
     A $\lambda$-term M is closed or a \textbf{Combinator} if it has no free variables, i.e., $\text{FV}(M) = \emptyset$.
   \end{definition}
-
-  Intuitively:
-  \begin{itemize}
-    \item \textbf{Free Variables (FV):} Occur unbound in a term.
-    \item \textbf{Bound Variables (BV):} Declared within a $\lambda$-abstraction.
-  \end{itemize}
   \vspace{1em}
   \[
   \text{For } M_1 = \lambda x. (xy), \quad \text{FV}(M_1)=\{y\},\quad \text{BV}(M_1)=\{x\}.
@@ -272,16 +300,16 @@ Any natural / reasonable notion of computation realizable in the physical world 
 
 % Section 4: Substitution and Alpha-Conversion
 \section{Substitution and $\alpha$-Conversion}
-% \begin{frame}{$\alpha$ Equivalence}
-%   \begin{block}{\strut}
-%   Q. What does it mean for two functions to be equivalent?
-%   \end{block}
-%   - Is $\lambda x.\mathtt{xy} \equiv \lambda y.\mathtt{yx}$?
-%   \begin{itemize}
-%     \item $\alpha$-equivalence is when two functions vary only by the names of bound variables.
-%     \item $M_1 \equiv_{\alpha} M_2$ if $M_1$ can be obtained from $M_2$ by renaming bound variables.
-%   \end{itemize}
-% \end{frame}
+\begin{frame}{$\alpha$ Equivalence}
+  \begin{block}{\strut}
+  Q. What does it mean for two functions to be equivalent?
+  \end{block}
+  - Is $\lambda x.\mathtt{xy} \equiv \lambda y.\mathtt{yx}$?
+  \begin{itemize}
+    \item $\alpha$-equivalence is when two functions vary only by the names of bound variables.
+    \item $M_1 \equiv_{\alpha} M_2$ if $M_1$ can be obtained from $M_2$ by renaming bound variables.
+  \end{itemize}
+\end{frame}
 % \begin{frame}{Renaming ($\alpha$ conversion)}
 %   $M\{y/x\}$: Rename bound variable $x$ to $y$ in $M$.\\
 %   \vspace{1em}
@@ -316,14 +344,15 @@ Any natural / reasonable notion of computation realizable in the physical world 
   Solution : Substitution Operation
   \end{block}
   \begin{itemize}
-    \item Notation: $M[x \to N]$.
+    \item Notation: $M[x := N]$.
     \item Replacing all free occurrences of a variable $x$ in $M$ by a term $N$.
   \end{itemize}
  % Adjust spacing to avoid overfull box
   Example:
   \begin{itemize}
-    \item  $(+x1)[x\to 2]$ = (+2 1)
-    \item $(\lambda x.(+x1))[x\to 2]$ = $(\lambda x.(+x1))$ (no free $x$)\\
+    \item  $(x+1)[x:= 2]$ = (2+1)
+    \item $(\lambda x.(x+1))[x:= \lambda y.z]$ = $(\lambda x.(x+1))$ (no free $x$)\\
+    \item $(\lambda x.(xt))[t:= \lambda y.z]$ = $(\lambda x.(x \lambda y.z))$ \\
   \end{itemize}
 \end{frame}
 
@@ -338,19 +367,6 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{definition}
 
 \end{frame}
-
-
-
-
-% \begin{frame}{Example of Substitution}
-%   \[
-%     (\lambda x. (xz)(yz))[y := (vv)] \rightarrow \lambda x.\Bigl(x(λu.v) \Bigr)\Bigl((vv)(λu.v)\Bigr)
-%   \]
-%   \vspace{0.5em}
-%   \begin{itemize}
-%     \item Illustrates careful handling to avoid capture.
-%   \end{itemize}
-% \end{frame}
 
 \begin{frame}{Substitution}
   \frametitle{Substitution Rules}
@@ -380,42 +396,10 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{enumerate}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Substitution}
 
-  A \(\lambda\)-term \(M\) is \textbf{safe} for substitution \(\varphi = [x_1 := N_1, \ldots, x_n := N_n]\) if:
-  \[
-    \text{BV}(M) \cap (\cup_{i=1}^n \text{FV}(N_i)) = \emptyset
-  \] 
-  that is free variables of \(N_i\) do not become bound in \(M\) after substitution.\\
-  \vspace{1em}
-
-  If \(M\) is a combinator, then \(M[\varphi] = M\) for any substitution \(\varphi\).\\
-
-  Some examples of substitution:
-  \begin{itemize}
-    \item \(y[x:=\lambda x.x] = y\) 
-    \item \(y[y:=\lambda x.x] = \lambda x.x\)
-  \end{itemize}
-\end{frame}
-
-
-% \begin{frame}
-%   \frametitle{Caputuring}
-
-%   Consider:
-%   \[
-%     \lambda x. (xz)(yz)[y := (xx); z := (\lambda u. v)] = \lambda x. (x(\lambda u. v))((xx)(\lambda u. v))
-%   \]
-
-  
-
-% \end{frame}
-
-
-\begin{frame}{Substitution}
+\begin{frame}{Capturing}
   \begin{block}{Example}
-    $(\lambda x.yx)[y \to \lambda z.xz]$
+    $(\lambda x.yx)[y := \lambda z.xz]$
   \end{block}
   \begin{itemize}
     \item Result ? : $(\lambda x.(\lambda z.\textcircled{x}z)x)$
@@ -423,47 +407,27 @@ Any natural / reasonable notion of computation realizable in the physical world 
     \item $x \in BV(\lambda \textcircled{x}.(\lambda z.\textcircled{x}z)x)$
   \end{itemize}
   This is called Variable Capture.\\
+  \vspace{1em}
+  Capturing occurs when a free variable unintentionally becomes bound due to renaming or substitution, altering the meaning of an expression.
+  \textbf{Problem:} Function's behavior is altered.
+\end{frame}
+\begin{frame}{$\alpha$-Conversion}
   \begin{block}{}
     \textbf{Solution:} Use $\alpha$-conversion to rename bound variables before substitution.
   \end{block}
-  \vspace{1em}
+
+    \[
+      (\lambda x.\, yx)[y := \lambda z.\, xz]
+    \]
+    Direct substitution causes variable capture, so we first apply $\alpha$-conversion:
+    \[
+      \lambda x.\, yx \rightarrow_{\alpha} \lambda w.\, yw
+    \]
+    Now perform the substitution:
+    \[
+      (\lambda w.\, yw)[y := \lambda z.\, xz] = \lambda w.\, (\lambda z.\, xz)w
+    \]
 \end{frame}
-
-% \subsection{$\alpha$-Conversion}
-\begin{frame}{Capturing}
-  Capturing occurs when a free variable unintentionally becomes bound due to renaming or substitution, altering the meaning of an expression.
-  
-  \vspace{0.5cm}
-  \textbf{Example:}
-  \begin{align*}
-      & (\lambda x. \lambda y. x) (y) \quad \text{(Original Expression)} \\
-      & \text{If we substitute } y \text{ for } x:\\
-      & \lambda y. y \quad \text{(Captured! Incorrect meaning)}
-  \end{align*}
-
-  \vspace{0.5cm}
-  \textbf{Problem:} The free variable \texttt{y} got bound accidentally, changing the function's behavior.
-\end{frame}
-
-% Slide 2: Alpha-Conversion
-\begin{frame}{$\alpha$-Conversion}
-  \textbf{Solution:} Rename bound variables before substitution to avoid conflicts.
-  
-  \vspace{0.5cm}
-  \textbf{Example:}
-  \begin{align*}
-      & (\lambda x. \lambda y. x) (y) \\
-      & \text{Rename } y \text{ to } z \text{ in the inner function:}\\
-      & (\lambda x. \lambda z. x) (y) \\
-      & \text{Now, substitute } y \text{ for } x:\\
-      & \lambda z. y \quad \text{(Correct! Meaning is preserved)}
-  \end{align*}
-
-  \vspace{0.5cm}
-  \textbf{Conclusion:} Alpha-conversion ensures correct variable scoping by avoiding unintended captures.
-\end{frame}
-
-% Slide 1: Definition of Alpha-Conversion
 \begin{frame}{Definition of $\alpha$-Conversion}
   \textbf{Immediate Alpha-Conversion} ($\rightarrow_{\alpha}$) allows renaming bound variables in lambda terms while preserving meaning.
   
@@ -479,39 +443,6 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \textbf{Alpha-Equivalence:} The reflexive, transitive closure of $\rightarrow_{\alpha}$ is denoted as $\equiv_{\alpha}$, meaning two terms are identical up to renaming.
 \end{frame}
 
-% Slide 2: Example of Alpha-Conversion
-\begin{frame}{Example: $\alpha$-Conversion}
-  \textbf{Stepwise Renaming:}
-  \[
-      \lambda fx. f(f(x)) \rightarrow_{\alpha} \lambda f. \lambda y. f(f(y)) 
-      \rightarrow_{\alpha} \lambda g. \lambda y. g(g(y)) 
-      = \lambda gy. g(g(y)).
-  \]
-  
-  \textbf{Explanation:}
-  \begin{itemize}
-      \item $x$ is renamed to $y$.
-      \item $f$ is renamed to $g$.
-      \item Meaning is preserved, avoiding variable capture.
-  \end{itemize}
-\end{frame}
-
-% % Slide 3: Need for Alpha-Conversion Before Substitution
-% \begin{frame}{Why Alpha-Conversion Before Substitution?}
-%   \textbf{Problem:} Direct substitution can lead to variable capture.
-  
-%   \vspace{0.5cm}
-%   \textbf{Solution:} Rename bound variables in $M$ to avoid conflicts with free variables in $N$.
-  
-%   \vspace{0.5cm}
-%   \textbf{Example:}
-%   \begin{align*}
-%       (\lambda yz. (xy)z)[x := yz] &\equiv_{\alpha} (\lambda uv. (xu)v)[x := yz] \\
-%       &= \lambda uv. ((yz)u)v.
-%   \end{align*}
-  
-%   \textbf{Conclusion:} We must rename bound variables first before substitution to ensure correctness.
-% \end{frame}
 
 % Section 5: Beta-Reduction and Church–Rosser
 \section{Beta-Reduction and Church–Rosser}
@@ -609,45 +540,77 @@ Any natural / reasonable notion of computation realizable in the physical world 
     \end{figure}
   \end{columns}
 \end{frame}
+\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+  \begin{block}{Proof: (1)$\leftarrow$ (2)}   
+    Assume that (2) holds. Since $\xrightarrow{*}_\beta$ is contained in $\xleftrightarrow{*}_\beta$, if 
+    \[
+    M \xrightarrow{*}_\beta M_1 \quad \text{and} \quad M \xrightarrow{*}_\beta M_2,
+    \]
+    then $M_1 \xleftrightarrow{*}_\beta M_2$.
+
+    \pause
+    Since (2) holds, there exists some $\lambda$-term $M_3$ such that 
+    \[
+    M_1 \xrightarrow{*}_\beta M_3 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_3,
+    \]
+    which is exactly statement (1).
+  \end{block}
+\end{frame}
+\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+  \begin{block}{Key Observation:}   
+      To prove that (1) implies (2), we use the fact:
+      \[
+        \xleftrightarrow{*}_\beta = (\xrightarrow{\ }_\beta \cup \xleftarrow{\ }_\beta)^*
+      \]
+      So, $M_1 \xleftrightarrow{*}_\beta M_2$ if and only if:
+      \begin{itemize}
+        \item[(a)] $M_1 = M_2$, or
+        \item[(b)] There exists $M_3$ such that $M_1 \xrightarrow{\ }_\beta M_3$ and $M_3 \xleftrightarrow{*}_\beta M_2$, or
+        \item[(c)] There exists $M_3$ such that $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xleftrightarrow{*}_\beta M_2$.
+      \end{itemize}
+  \end{block}
+\end{frame}
+\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+  \begin{block}{Proof: (1)$\rightarrow$ (2): Induction on Number of Steps in $M_1 \xleftrightarrow{*}_\beta M_2$}
+    \textbf{Case (a):} $M_1 = M_2$ \\
+    Then (2) holds trivially with $M_3 = M_1 = M_2$.
+
+    \vspace{1em}
+    \textbf{Case (b):} $M_1 \xrightarrow{\ }_\beta M_3$ and $M_3 \xleftrightarrow{*}_\beta M_2$ \\
+    By induction hypothesis, $\exists M_4$ such that:
+    \[
+    M_3 \xrightarrow{*}_\beta M_4 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4
+    \]
+    Hence, 
+    \[
+    M_1 \xrightarrow{\ }_\beta M_3 \xrightarrow{*}_\beta M_4, \quad \text{so } M_1 \xrightarrow{*}_\beta M_4
+    \]
+    Thus, (2) is satisfied.
+
+  \end{block}
+\end{frame}
+  \begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+    \begin{block}{Proof: (1)$\rightarrow$ (2): Induction on Number of Steps in $M_1 \xleftrightarrow{*}_\beta M_2$}
+    \textbf{Case (c):} $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xleftrightarrow{*}_\beta M_2$ \\
+    By induction hypothesis, $\exists M_4$ such that:
+    \[
+    M_3 \xrightarrow{*}_\beta M_4 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4
+    \]
+    Since $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xrightarrow{*}_\beta M_4$, by (1), $\exists M_5$ such that:
+    \[
+    M_1 \xrightarrow{*}_\beta M_5 \quad \text{and} \quad M_4 \xrightarrow{*}_\beta M_5
+    \]
+    Hence, 
+    \[
+    M_1 \xrightarrow{*}_\beta M_5 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4 \xrightarrow{*}_\beta M_5
+    \]
+    proving (2).
+  \end{block}
+\end{frame}
 
 % Section 6: Useful Combinators
 \section{Some Useful Combinators}
 
-\subsection{Currying}
-\begin{frame}
-  \frametitle{Currying}
-  \begin{block}{Definition}
-    In lambda calculus, a abstraction takes only one argument.\\
-    \textbf{Currying}( named after Haskell Curry) is the process of transforming a function that takes multiple arguments into a sequence of functions, each taking a single argument.
-  \end{block}
-  Consider the function: \(f:\mathbb{N}\times\mathbb{N} \rightarrow \mathbb{N}\) \\
-  If we fix the first argument, we get a function \(F_x:\mathbb{N} \rightarrow \mathbb{N}\)\\
-  \[
-    F_x(y) = f(x,y) \forall y \in \mathbb{N}
-  \]  
-  So we can write \(F_x = \lambda y.f(x,y)\)
-  and then the function \(x \mapsto F_x\) can be written as:
-  \[
-    F = \lambda x.F_x = \lambda x.\lambda y.f(x,y)
-  \]
-  Hence we obtain 
-  \[
-    (F\;M)N \rightarrow_\beta F_M N \rightarrow_\beta f(M,N)
-  \]
-\end{frame}
-
-\begin{frame}
-  \frametitle{Currying}
-
-  Hence we have ability to transform a function that takes multiple arguments into a sequence of functions, each taking a single argument.\\
-  As a notational convention, we can write:
-  \[
-  \begin{aligned}
-      F &= \lambda x_1.\lambda x_2.\cdots\lambda x_n.f(x_1,x_2,\ldots,x_n) \\ 
-        &= \lambda x_1 x_2 \cdots x_n. f(x_1,x_2,\ldots,x_n)
-  \end{aligned}
-  \]
-\end{frame}
 
 \subsection{Bools, Conditional and Pairs}
 \begin{frame}{Combinators I, K, and S}
@@ -991,6 +954,23 @@ Any natural / reasonable notion of computation realizable in the physical world 
 
 % Section 8: Fixed-Point Combinators and Recursion
 \section{Fixed-Point Combinators and Recursion}
+\begin{frame}{The Factorial: n!}
+  \begin{itemize}
+    \item $fact(0)=1$
+    \item $fact(n)=n*fact(n-1)$
+  \end{itemize}
+  \begin{block}{Factorial Function}
+    \texttt{
+      int fact(int n) \{ \newline
+      \hspace*{1em}if (n == 0) return 1; \newline
+      \hspace*{1em}else return n * fact(n - 1); \newline
+      \}
+    }
+  \end{block}
+  \begin{block}{}
+    \ fact=($\lambda$ n. if (IsZero n) then 1 else Mult N (fact (Pred n))) \\
+  \end{block}
+\end{frame}
 \begin{frame}{Fixed-Point Combinators}
   \begin{itemize}
   \item Fixed-point combinators allow us to define recursive functions in the lambda calculus, giving us a way to express recursion without explicit self-reference.
