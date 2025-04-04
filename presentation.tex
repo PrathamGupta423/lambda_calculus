@@ -992,7 +992,15 @@ Any natural / reasonable notion of computation realizable in the physical world 
 % Section 8: Fixed-Point Combinators and Recursion
 \section{Fixed-Point Combinators and Recursion}
 \begin{frame}{Fixed-Point Combinators}
-  Fixed-point combinators allow us to define recursive functions in the lambda calculus, giving us a way to express recursion without explicit self-reference.
+  \begin{itemize}
+  \item Fixed-point combinators allow us to define recursive functions in the lambda calculus, giving us a way to express recursion without explicit self-reference.
+  We want a ability to be able to do this:
+  \[
+    func(x):= \text{If [base condition] then base else func(y)}
+  \]
+  \item Our issue is that functions in lambda calculus are not named hence we cannot have the function be named and refrence called itself.\\
+  \item \textbf{Fixed-point combinators} solves the problem by taking the function as an argument and returning a fixed point of that function.
+  \end{itemize}
   \begin{block}{Y-Combinator}
     \[
     \mathbf{Y} = \lambda f. (\lambda x. f (x x)) (\lambda x. f (x x))
@@ -1034,22 +1042,34 @@ Any natural / reasonable notion of computation realizable in the physical world 
 
 \begin{frame}{Turing's $\Theta$-Combinator}
   \begin{itemize}
-  \item Defining the \textit{Turing $\mathbf{\Theta}$-combinator}:
+  \item An issue with Y-combinator is the it does allow one step-self reference ie. \(F(\mathbf{Y}F) \xleftrightarrow{*}_\beta \mathbf{Y}F\) and not \( \mathbf{Y}F \xrightarrow[]{\text{+}}_\beta F(\mathbf{Y}F)\).
+  \item To solve this we use the \textit{Turing $\mathbf{\Theta}$-combinator}:
   \[ \mathbf{\Theta} := \left( \lambda xy.y\left( xxy \right)\right) \left( \lambda xy.y\left( xxy \right) \right) \]
   \item Now, for any $\lambda$-term \(F\), we have:
     \[
       \mathbf{\Theta}F \xrightarrow[]{\text{+}}_\beta F(\mathbf{\Theta}F)
     \]
-    \textit{Proof:} Writing \( A = (\lambda xy.y(xxy))\). Thus,
+    % \textit{Proof:} Writing \( A = (\lambda xy.y(xxy))\). Thus,
+    % \( \mathbf{\Theta} = AA \). Now,
+    % \begin{align*}
+    %   \mathbf{\Theta}F &= AA F = ((\lambda xy.y(xxy))A)F\\
+    %   &\xrightarrow[]{}_\beta (\lambda y.y(AAy))F \\
+    %   &\xrightarrow[]{}_\beta F(AAF)\\
+    %   &= F(\mathbf{\Theta}F)\\
+    %   & \hspace{5cm} \blacksquare
+    % \end{align*}
+  \end{itemize}
+  \begin{proof}
+    Writing \( A = (\lambda xy.y(xxy)) \). Thus,  
     \( \mathbf{\Theta} = AA \). Now,
     \begin{align*}
       \mathbf{\Theta}F &= AA F = ((\lambda xy.y(xxy))A)F\\
       &\xrightarrow[]{}_\beta (\lambda y.y(AAy))F \\
       &\xrightarrow[]{}_\beta F(AAF)\\
-      &= F(\mathbf{\Theta}F)\\
-      & \hspace{5cm} \blacksquare
+      &= F(\mathbf{\Theta}F)
     \end{align*}
-  \end{itemize}
+    \end{proof}
+    
 \end{frame}
 
 \begin{frame}{Defining Recursive Functions}
@@ -1400,7 +1420,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
       \begin{itemize}
         \item We have to use the Pair combinators to store pair within a pair to form a linked list.
       \end{itemize}
-      \item Since the tape of turing machine can be represented as a list, we can simulate a Turing machine using the \(\lambda\)-calculus. (Very Tedious Task)
+      \item Since the tape of turing machine can be represented as a list, we can simulate a Turing machine using the \(\lambda\)-calculus. (Tedious Task)
       \item The Construction of turing machine in \(\lambda\)-calculus mimics the proof that Turing machince computes a computable function.
   \end{itemize}
 \end{frame}
