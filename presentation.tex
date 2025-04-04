@@ -657,7 +657,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
     \item \(\mathbf{T} = \textbf{K} = \lambda xy.x \) (True)
 
     \item \( \mathbf{F} =\mathbf{K}_* = \lambda xy.y \) (False)
-    \item \( \mathbf{S} = \lambda xyz. xz(yz) \) 
+    % \item \( \mathbf{S} = \lambda xyz. xz(yz) \) 
   \end{itemize}
   We can see some interesting properties of these combinators:
   \begin{itemize}
@@ -1001,49 +1001,49 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \item Our issue is that functions in lambda calculus are not named hence we cannot have the function be named and refrence called itself.\\
   \item \textbf{Fixed-point combinators} solves the problem by taking the function as an argument and returning a fixed point of that function.
   \end{itemize}
-  \begin{block}{Y-Combinator}
+  \begin{block}{Turing $\Theta$-Combinator}
     \[
-    \mathbf{Y} = \lambda f. (\lambda x. f (x x)) (\lambda x. f (x x))
+      \mathbf{\Theta} := \left( \lambda xy.y\left( xxy \right)\right) \left( \lambda xy.y\left( xxy \right) \right)
     \]
   \end{block}
 
 \end{frame}
 
-\begin{frame}
-  \frametitle{Y-Combinator}
-  \begin{lemma}
+% \begin{frame}
+%   \frametitle{Y-Combinator}
+%   \begin{lemma}
     
-    For any \(\lambda\)-term \(F\), we have:
-    \vspace{-0.5em}
-    \[
-      F(\mathbf{Y} F) \xleftrightarrow{*}_\beta Y F
-    \]
-    \textbf{Proof:}
-    Let W = \(\lambda x. F (x x)\)\\
-    Then we have:
-    \[
-      \begin{aligned}
-      \mathbf{Y} F &= (\lambda f. (\lambda x. f (x x)) (\lambda x. f (x x))) F
-      \rightarrow_\beta (\lambda x. F (x x)) (\lambda x. F (x x)) \\
-      &= (\lambda x. F (x x))W       \rightarrow_\beta F(W W) \\
-    \end{aligned}
-    \]
-    and:
-    \[
-      \begin{aligned}
-      F(\mathbf{Y} F) = F((\lambda f. (\lambda x. f (x x)) (\lambda x. f (x x))) F) &\rightarrow_\beta F((\lambda x. F (x x)) (\lambda x. F (x x))) \\
-      &= F(WW)
-      \end{aligned}
-    \]
-    and Therfore: \(F(\mathbf{Y}F) \xleftrightarrow{*}_\beta \mathbf{Y}F\)
+%     For any \(\lambda\)-term \(F\), we have:
+%     \vspace{-0.5em}
+%     \[
+%       F(\mathbf{Y} F) \xleftrightarrow{*}_\beta Y F
+%     \]
+%     \textbf{Proof:}
+%     Let W = \(\lambda x. F (x x)\)\\
+%     Then we have:
+%     \[
+%       \begin{aligned}
+%       \mathbf{Y} F &= (\lambda f. (\lambda x. f (x x)) (\lambda x. f (x x))) F
+%       \rightarrow_\beta (\lambda x. F (x x)) (\lambda x. F (x x)) \\
+%       &= (\lambda x. F (x x))W       \rightarrow_\beta F(W W) \\
+%     \end{aligned}
+%     \]
+%     and:
+%     \[
+%       \begin{aligned}
+%       F(\mathbf{Y} F) = F((\lambda f. (\lambda x. f (x x)) (\lambda x. f (x x))) F) &\rightarrow_\beta F((\lambda x. F (x x)) (\lambda x. F (x x))) \\
+%       &= F(WW)
+%       \end{aligned}
+%     \]
+%     and Therfore: \(F(\mathbf{Y}F) \xleftrightarrow{*}_\beta \mathbf{Y}F\)
     
-  \end{lemma}
-\end{frame}
+%   \end{lemma}
+% \end{frame}
 
 \begin{frame}{Turing's $\Theta$-Combinator}
   \begin{itemize}
-  \item An issue with Y-combinator is the it does allow one step-self reference ie. \(F(\mathbf{Y}F) \xleftrightarrow{*}_\beta \mathbf{Y}F\) and not \( \mathbf{Y}F \xrightarrow[]{\text{+}}_\beta F(\mathbf{Y}F)\).
-  \item To solve this we use the \textit{Turing $\mathbf{\Theta}$-combinator}:
+  % \item An issue with Y-combinator is the it does allow one step-self reference ie. \(F(\mathbf{Y}F) \xleftrightarrow{*}_\beta \mathbf{Y}F\) and not \( \mathbf{Y}F \xrightarrow[]{\text{+}}_\beta F(\mathbf{Y}F)\).
+  \item We define \textit{Turing $\mathbf{\Theta}$-combinator} as:
   \[ \mathbf{\Theta} := \left( \lambda xy.y\left( xxy \right)\right) \left( \lambda xy.y\left( xxy \right) \right) \]
   \item Now, for any $\lambda$-term \(F\), we have:
     \[
@@ -1059,7 +1059,7 @@ Any natural / reasonable notion of computation realizable in the physical world 
     %   & \hspace{5cm} \blacksquare
     % \end{align*}
   \end{itemize}
-  \begin{proof}
+  \begin{block}{Proof}
     Writing \( A = (\lambda xy.y(xxy)) \). Thus,  
     \( \mathbf{\Theta} = AA \). Now,
     \begin{align*}
@@ -1068,7 +1068,8 @@ Any natural / reasonable notion of computation realizable in the physical world 
       &\xrightarrow[]{}_\beta F(AAF)\\
       &= F(\mathbf{\Theta}F)
     \end{align*}
-    \end{proof}
+  \end{block}
+  \small The conbinator takes our function as outputs equivalent of \(\lambda u.(F(F(\dots(F(u))))\)
     
 \end{frame}
 
@@ -1080,18 +1081,15 @@ Any natural / reasonable notion of computation realizable in the physical world 
       \]
     \item Let \(F = \lambda g x. M(x, g)\) and define \(G = \Theta F\).
   \end{itemize}
-\end{frame}
-
-\begin{frame}{Example: Factorial Function}
-  \begin{itemize}
-    \item Define:
-      \[
+  \begin{block}{Example: Factorial Function}
+    Define:
+    \[
       F = \lambda g\ n.\, \text{if}\ (\text{IsZero}\ n)\ \text{then}\ c_1\ \text{else}\ \text{Mult}\ n\ \bigl(g\ (\text{Pred}\ n)\bigr)
       \]
-    \item Then \(G = \Theta F\) represents the factorial function.
-  \end{itemize}
-  \vspace{-0.5em} % Adjust spacing to avoid overfull box
+    Then \(G = \Theta F\) represents the factorial function.
+  \end{block}
 \end{frame}
+
 
 \begin{frame}{Proof: Factorial Function}
   \begin{itemize}
@@ -1310,6 +1308,15 @@ Any natural / reasonable notion of computation realizable in the physical world 
 \end{frame}
 
 \begin{frame}{Theorem Overview}
+
+  \begin{block}{Theorem}
+    If a (total) function $f: \mathbb{N}^n \to \mathbb{N}$ is computable, then it is $\lambda$-definable.
+  
+    If a (partial) function $f: \mathbb{N}^n \to \mathbb{N}$ is partial computable, then it is $\lambda$-definable.  
+  \end{block}
+
+
+  Since the definition of computable functions is also same for turing machince the above theorem also tells us that the lambda calculus has same power as a Turing machine.
   \begin{itemize}
     \item Every total computable function is \(\lambda\)-definable.
     \item Every partial computable function is also \(\lambda\)-definable.
@@ -1317,11 +1324,6 @@ Any natural / reasonable notion of computation realizable in the physical world 
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Theorem 3.11 (Kleene, 1936)}
-  \textbf{Statement:} If a (total) function $f: \mathbb{N}^n \to \mathbb{N}$ is computable, then it is $\lambda$-definable.
-  
-  If a (partial) function $f: \mathbb{N}^n \to \mathbb{N}$ is partial computable, then it is $\lambda$-definable.
-\end{frame}
 
 \begin{frame}{Proof Outline}
   \textbf{Step 1: Base Case}
