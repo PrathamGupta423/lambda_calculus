@@ -540,6 +540,73 @@ Any natural / reasonable notion of computation realizable in the physical world 
     \end{figure}
   \end{columns}
 \end{frame}
+\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+  \begin{block}{Proof: (1)$\leftarrow$ (2)}   
+    Assume that (2) holds. Since $\xrightarrow{*}_\beta$ is contained in $\xleftrightarrow{*}_\beta$, if 
+    \[
+    M \xrightarrow{*}_\beta M_1 \quad \text{and} \quad M \xrightarrow{*}_\beta M_2,
+    \]
+    then $M_1 \xleftrightarrow{*}_\beta M_2$.
+
+    \pause
+    Since (2) holds, there exists some $\lambda$-term $M_3$ such that 
+    \[
+    M_1 \xrightarrow{*}_\beta M_3 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_3,
+    \]
+    which is exactly statement (1).
+  \end{block}
+\end{frame}
+\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+  \begin{block}{Key Observation:}   
+      To prove that (1) implies (2), we use the fact:
+      \[
+        \xleftrightarrow{*}_\beta = (\xrightarrow{\ }_\beta \cup \xleftarrow{\ }_\beta)^*
+      \]
+      So, $M_1 \xleftrightarrow{*}_\beta M_2$ if and only if:
+      \begin{itemize}
+        \item[(a)] $M_1 = M_2$, or
+        \item[(b)] There exists $M_3$ such that $M_1 \xrightarrow{\ }_\beta M_3$ and $M_3 \xleftrightarrow{*}_\beta M_2$, or
+        \item[(c)] There exists $M_3$ such that $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xleftrightarrow{*}_\beta M_2$.
+      \end{itemize}
+  \end{block}
+\end{frame}
+\begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+  \begin{block}{Proof: (1)$\rightarrow$ (2): Induction on Number of Steps in $M_1 \xleftrightarrow{*}_\beta M_2$}
+    \textbf{Case (a):} $M_1 = M_2$ \\
+    Then (2) holds trivially with $M_3 = M_1 = M_2$.
+
+    \vspace{1em}
+    \textbf{Case (b):} $M_1 \xrightarrow{\ }_\beta M_3$ and $M_3 \xleftrightarrow{*}_\beta M_2$ \\
+    By induction hypothesis, $\exists M_4$ such that:
+    \[
+    M_3 \xrightarrow{*}_\beta M_4 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4
+    \]
+    Hence, 
+    \[
+    M_1 \xrightarrow{\ }_\beta M_3 \xrightarrow{*}_\beta M_4, \quad \text{so } M_1 \xrightarrow{*}_\beta M_4
+    \]
+    Thus, (2) is satisfied.
+
+  \end{block}
+\end{frame}
+  \begin{frame}{Proof Sketch:(Part 1 $\Leftrightarrow$ Part 2)}
+    \begin{block}{Proof: (1)$\rightarrow$ (2): Induction on Number of Steps in $M_1 \xleftrightarrow{*}_\beta M_2$}
+    \textbf{Case (c):} $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xleftrightarrow{*}_\beta M_2$ \\
+    By induction hypothesis, $\exists M_4$ such that:
+    \[
+    M_3 \xrightarrow{*}_\beta M_4 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4
+    \]
+    Since $M_3 \xrightarrow{\ }_\beta M_1$ and $M_3 \xrightarrow{*}_\beta M_4$, by (1), $\exists M_5$ such that:
+    \[
+    M_1 \xrightarrow{*}_\beta M_5 \quad \text{and} \quad M_4 \xrightarrow{*}_\beta M_5
+    \]
+    Hence, 
+    \[
+    M_1 \xrightarrow{*}_\beta M_5 \quad \text{and} \quad M_2 \xrightarrow{*}_\beta M_4 \xrightarrow{*}_\beta M_5
+    \]
+    proving (2).
+  \end{block}
+\end{frame}
 
 % Section 6: Useful Combinators
 \section{Some Useful Combinators}
